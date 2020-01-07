@@ -164,19 +164,19 @@ public:
             inline scalar alpha() const;
     
             //- Return the characteristic vibrational temperature
-            inline scalarList thetaV() const;    
+            inline const scalarList& thetaV() const;    
             
             //- Return the characteristic dissociation temperature
-            inline scalarList thetaD() const;
+            inline const scalarList& thetaD() const;
     
             //- Return the characteristic vibrational relaxation number
-            inline scalarList Zref() const;
+            inline const scalarList& Zref() const;
                       
             //- Return the reference temperature for the characteristic vibrational relaxation number
-            inline scalarList TrefZv() const;
+            inline const scalarList& TrefZv() const;
             
             //- Return the characteristic dissociation level
-            inline labelList charDissQuantumLevel() const;
+            inline const labelList& charDissQuantumLevel() const;
             
             //- Return the ionisation temperature
             inline scalar ionisationTemperature() const;
@@ -188,10 +188,10 @@ public:
             inline label charge() const;
 
             //- Return the number of electronic energy/degeneracy levels
-            inline scalarList electronicEnergyList() const;
+            inline const scalarList& electronicEnergyList() const;
             
             //- Return the number of electronic energy/degeneracy levels
-            inline labelList degeneracyList() const;
+            inline const labelList& degeneracyList() const;
     };
 
 
@@ -287,9 +287,9 @@ public:
             const label newParcel,
             const label classification,
             const label stuckToWall,
-            const scalarField wallTemperature,
-            const vectorField wallVectors,
-            const labelList vibLevel
+            const scalarField& wallTemperature,
+            const vectorField& wallVectors,
+            const labelList& vibLevel
         );
 
         //- Construct from Istream
@@ -368,13 +368,13 @@ public:
             inline label stuckToWall() const;
             
              //Return const access to temperature of wall particle is stuck to
-            inline scalarField wallTemperature() const;
+            inline const scalarField& wallTemperature() const;
             
             //Return access to wall vectors of wall particle is stuck to
-            inline vectorField wallVectors() const;
+            inline const vectorField& wallVectors() const;
             
             //- Return const access to vibrational energy
-            inline labelList vibLevel() const;
+            inline const labelList& vibLevel() const;
 
 
         // Edit

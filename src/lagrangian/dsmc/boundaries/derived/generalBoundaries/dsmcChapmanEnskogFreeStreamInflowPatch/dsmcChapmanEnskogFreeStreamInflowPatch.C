@@ -460,7 +460,7 @@ void dsmcChapmanEnskogFreeStreamInflowPatch::controlParcelsBeforeMove()
                     stuckToWall,
                     wallTemperature,
                     wallVectors,
-                    vibLevel
+                    vibLevel,
                 );
 
                 parcelsInserted[m] += 1.0;

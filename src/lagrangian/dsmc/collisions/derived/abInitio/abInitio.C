@@ -135,12 +135,12 @@ Foam::scalar Foam::abInitio::sigmaTcR
     
     scalar sigmaTPQ = 0.0;
     
-    if(i > 899)
+    if(i > (nRows_ - 1))
     {
-        i = 899;
+        i = (nRows_ - 1);
     }
     
-    if(i > 899 || i < 0)
+    if(i > (nRows_ - 1) || i < 0)
     {
         FatalErrorIn("abInitio::sigmaTcR")
                 << "Ab initio relative velocity out of scope."
@@ -163,12 +163,6 @@ Foam::scalar Foam::abInitio::sigmaTcR
             sigmaTPQ = y0 + (cR - x0)*((y1 - y0)/(x1 - x0));
         }
     }
-//     else if (g < cR)
-//     {
-//         Info << "g = " << g << endl;
-//         Info << "g+1 = " << g_[i+1] << endl;
-//         Info << "cR = " << cR << endl;
-//     }
     else
     {
         sigmaTPQ = sigmaT_[i];
@@ -231,7 +225,7 @@ void Foam::abInitio::collide
                 << exit(FatalError);
     }
     
-//     scalar g = g_[i];
+    scalar g = g_[i];
 
     label j = rndGen.integer(0, (nColumns_ - 3));
     
@@ -242,16 +236,24 @@ void Foam::abInitio::collide
                 << exit(FatalError);
     }
     
-    scalar cosTheta = xi_[i][j];
+    scalar cosTheta = 0.0;//xi_[i][j];
     
-    if(i != 0)
+    if(g > cR)
     {
-        scalar x0 = g_[i-1];
-        scalar x1 = g_[i];
-        scalar y0 = xi_[i-1][j];
-        scalar y1 = xi_[i][j];
-        
-        cosTheta = y0 + (cR - x0)*((y1 - y0)/(x1 - x0));
+        if(i != 0)
+        {
+            scalar x0 = g_[i-1];
+            scalar x1 = g_[i];
+            scalar y0 = xi_[i-1][j];
+            scalar y1 = xi_[i][j];
+            
+            cosTheta = y0 + (cR - x0)*((y1 - y0)/(x1 - x0));
+        }
+    }
+    else
+    {
+        Pout << "g < cR!!!" << endl;
+        cosTheta = xi_[i][j];
     }
     
 

@@ -159,44 +159,30 @@ void dsmcCLLWallPatch::controlParticle(dsmcParcel& p, dsmcParcel::trackingData& 
     
     scalar mostProbableVelocity = sqrt(2.0*physicoChemical::k.value()*T/mass);
     
-    //normalising the incident velocities
+    scalar r1 = sqrt(-alphaN*log(rndGen.scalar01()));
+    scalar phi2 = 2.0*pi*rndGen.scalar01();
+    scalar normalisedNormalVelocity = mag(U_dot_nw/mostProbableVelocity);
+    scalar um = normalisedNormalVelocity*sqrt(1.0 -alphaN);
     
-    vector normalisedTangentialVelocity = Ut/mostProbableVelocity;
+    scalar r3 = sqrt(-alphaT*log(rndGen.scalar01()));
+    scalar phi4 = 2.0*pi*rndGen.scalar01();
+    scalar normalisedTangentialVelocity1 = mag(Ut/mostProbableVelocity);
+    scalar ut = normalisedTangentialVelocity1*sqrt(1.0 - alphaT);
     
-    scalar normalisedNormalVelocity = U_dot_nw/mostProbableVelocity;
-    
-    //normal random number components
-    
-    scalar thetaNormal = 2.0*pi*rndGen.scalar01();
-    
-    scalar rNormal = sqrt(-alphaN*log(rndGen.scalar01()));
-
-    //tangential random number components
-
-    scalar thetaTangential1 = 2.0*pi*rndGen.scalar01();
-    
-    scalar rTangential1 = sqrt(-alphaT*log(rndGen.scalar01()));
-    
-//     scalar thetaTangential2 = 2.0*pi*rndGen.scalar01();
-    
-//     scalar rTangential2 = sqrt(-alphaT*log(rndGen.scalar01()));
+    scalar r5 = sqrt(-alphaT*log(rndGen.scalar01()));
+    scalar phi6 = 2.0*pi*rndGen.scalar01();
 
     //selecting the reflected thermal velocities
     
-    scalar normalisedIncidentTangentialVelocity1 = mag(normalisedTangentialVelocity);
-
-    scalar um = sqrt(1.0-alphaN)*normalisedNormalVelocity;
-    
     scalar normalVelocity = sqrt(
-                                    (rNormal*rNormal) 
+                                    (r1*r1) 
                                     + (um*um) 
-                                    + 2.0*rNormal*um*cos(thetaNormal)
-                            );
+                                    + 2.0*r1*um*cos(phi2)
+                                );
     
-    scalar tangentialVelocity1 = (sqrt(1.0 - alphaT)*mag(normalisedIncidentTangentialVelocity1)
-                                + rTangential1*cos(thetaTangential1));
+    scalar tangentialVelocity1 = ut + r3*cos(phi4);
     
-    scalar tangentialVelocity2 = rTangential1*sin(thetaTangential1);
+    scalar tangentialVelocity2 = r5*cos(phi6);
 
     U = 
         mostProbableVelocity
@@ -206,50 +192,50 @@ void dsmcCLLWallPatch::controlParticle(dsmcParcel& p, dsmcParcel::trackingData& 
                 - normalVelocity*nw
         );
             
-    if( (p.position().x() > 0.002) && ( p.position().x() < 0.0022) )
-    {
-        if(Pstream::parRun())
-        {
-            Pout << "Scattering angle, 0 mm = " << atan(U.y()/U.x()) << endl;
-        }
-        else
-        {
-            scalar angle=0;
-            if((tangentialVelocity1*tw1).x()>0)
-            angle = acos( ( (normalVelocity*nw + tangentialVelocity1*tw1) & tangentialVelocity1*tw1 )/mag((normalVelocity*nw+tangentialVelocity1*tw1) * tangentialVelocity1*tw1) );
-            if((tangentialVelocity1*tw1).x()<0)
-            angle = acos( ( (normalVelocity*nw - tangentialVelocity1*tw1) & tangentialVelocity1*tw1 )/mag((normalVelocity*nw+tangentialVelocity1*tw1) * tangentialVelocity1*tw1) );
-                
-            Info << "Scattering angle, 0 mm = " << angle << endl;
-        }
-    }
-    
-    if( (p.position().x() > 0.0068) && ( p.position().x() < 0.0072 ) )
-    {
-        if(Pstream::parRun())
-        {
-            Pout << "Scattering angle, 5 mm = " << atan(U.y()/U.x()) << endl;
-        }
-        else
-        {
-            scalar angle=0;
-            if((tangentialVelocity1*tw1).x()>0)
-            angle = acos( ( (normalVelocity*nw + tangentialVelocity1*tw1) & tangentialVelocity1*tw1 )/mag((normalVelocity*nw+tangentialVelocity1*tw1) * tangentialVelocity1*tw1) );
-            if((tangentialVelocity1*tw1).x()<0)
-            angle = acos( ( (normalVelocity*nw - tangentialVelocity1*tw1) & tangentialVelocity1*tw1 )/mag((normalVelocity*nw+tangentialVelocity1*tw1) * tangentialVelocity1*tw1) );
-                
-            Info << "Scattering angle, 5 mm = " << angle << endl;
-        }
-    }
+//     if( (p.position().x() > 0.002) && ( p.position().x() < 0.0022) )
+//     {
+//         if(Pstream::parRun())
+//         {
+//             Pout << "Scattering angle, 0 mm = " << atan(U.y()/U.x()) << endl;
+//         }
+//         else
+//         {
+//             scalar angle=0;
+//             if((tangentialVelocity1*tw1).x()>0)
+//             angle = acos( ( (normalVelocity*nw + tangentialVelocity1*tw1) & tangentialVelocity1*tw1 )/mag((normalVelocity*nw+tangentialVelocity1*tw1) * tangentialVelocity1*tw1) );
+//             if((tangentialVelocity1*tw1).x()<0)
+//             angle = acos( ( (normalVelocity*nw - tangentialVelocity1*tw1) & tangentialVelocity1*tw1 )/mag((normalVelocity*nw+tangentialVelocity1*tw1) * tangentialVelocity1*tw1) );
+//                 
+//             Info << "Scattering angle, 0 mm = " << angle << endl;
+//         }
+//     }
+//     
+//     if( (p.position().x() > 0.0068) && ( p.position().x() < 0.0072 ) )
+//     {
+//         if(Pstream::parRun())
+//         {
+//             Pout << "Scattering angle, 5 mm = " << atan(U.y()/U.x()) << endl;
+//         }
+//         else
+//         {
+//             scalar angle=0;
+//             if((tangentialVelocity1*tw1).x()>0)
+//             angle = acos( ( (normalVelocity*nw + tangentialVelocity1*tw1) & tangentialVelocity1*tw1 )/mag((normalVelocity*nw+tangentialVelocity1*tw1) * tangentialVelocity1*tw1) );
+//             if((tangentialVelocity1*tw1).x()<0)
+//             angle = acos( ( (normalVelocity*nw - tangentialVelocity1*tw1) & tangentialVelocity1*tw1 )/mag((normalVelocity*nw+tangentialVelocity1*tw1) * tangentialVelocity1*tw1) );
+//                 
+//             Info << "Scattering angle, 5 mm = " << angle << endl;
+//         }
+//     }
 
-    vector uWallNormal = (velocity_ & nw) * nw;
-    vector uWallTangential1 = (velocity_ & tw1) * tw1; 
-    vector uWallTangential2 = (velocity_ & tw2) * tw2;
-    vector UNormal = ((U & nw) * nw) + uWallNormal*alphaN;  
-    vector UTangential1 = (U & tw1) * tw1 + uWallTangential1*alphaT;
-    vector UTangential2 = (U & tw2) * tw2 + uWallTangential2*alphaT;
-    
-    U = UNormal + UTangential1 + UTangential2;
+//     vector uWallNormal = (velocity_ & nw) * nw;
+//     vector uWallTangential1 = (velocity_ & tw1) * tw1; 
+//     vector uWallTangential2 = (velocity_ & tw2) * tw2;
+//     vector UNormal = ((U & nw) * nw) + uWallNormal*alphaN;  
+//     vector UTangential1 = (U & tw1) * tw1 + uWallTangential1*alphaT;
+//     vector UTangential2 = (U & tw2) * tw2 + uWallTangential2*alphaT;
+//     
+//     U = UNormal + UTangential1 + UTangential2;
     
     //selecting rotational energy, this is Lord's extension to rotational degrees of freedom
     

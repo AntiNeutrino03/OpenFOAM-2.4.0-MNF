@@ -490,9 +490,9 @@ void Foam::dsmcCloud::addNewParcel
     const label newParcel,
     const label classification,
     const label stuckToWall,
-    const scalarField wallTemperature,
-    const vectorField wallVectors,
-    const labelList vibLevel
+    const scalarField& wallTemperature,
+    const vectorField& wallVectors,
+    const labelList& vibLevel
 )
 {
     dsmcParcel* pPtr = new dsmcParcel
@@ -904,11 +904,11 @@ void Foam::dsmcCloud::evolve()
     controllers_.controlBeforeMove();//****
     boundaries_.controlBeforeMove();//****
     
-    if(charged_)
-    {
-        //Remove electrons
-        removeElectrons();
-    }
+//     if(charged_)
+//     {
+//         //Remove electrons
+//         removeElectrons();
+//     }
     
     if(adsorption_)
     {
@@ -927,13 +927,13 @@ void Foam::dsmcCloud::evolve()
         buildCellOccupancy();
     }
 
-    if(charged_)
-    {
-        //Add electrons back after the move function
-        addElectrons();
-        // Update cell occupancy
-        buildCellOccupancy();
-    }
+//     if(charged_)
+//     {
+//         //Add electrons back after the move function
+//         addElectrons();
+//         // Update cell occupancy
+//         buildCellOccupancy();
+//     }
     controllers_.controlBeforeCollisions();//****
     boundaries_.controlBeforeCollisions();//****
 //     Info << "collisions" << endl;
@@ -1216,12 +1216,12 @@ Foam::label Foam::dsmcCloud::equipartitionElectronicLevel
             //Eq. 3.1.1 of Liechty thesis.   
             boltz = degeneracyList_[ii]*
                             exp((-electronicEnergyList_[ii]/EMax))/expSum;
-            
+
             if (boltzMax < boltz)
             {
                 boltzMax = boltz;
                 jSelect = ii;
-            }               
+            }
         }
         //Max. poss energy in list : list goes from [0] to [jMax-1]
         EJ = electronicEnergyList_[jSelect]; 

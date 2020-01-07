@@ -557,9 +557,9 @@ public:
                 const label newParcel,
                 const label classification,
                 const label stuckToWall,
-                const scalarField wallTemperature,
-                const vectorField wallVectors,
-                const labelList vibLevel
+                const scalarField& wallTemperature,
+                const vectorField& wallVectors,
+                const labelList& vibLevel
             );
             
             //- redistribute vibrational energy after a reaction
