@@ -108,6 +108,16 @@ inline const List< List < scalarField > >& boundaryMeasurements::electronicEBF()
     return electronicEBF_;
 }
 
+inline const List< List < scalarField > >& boundaryMeasurements::numberFluxBF() const
+{
+    return numberFluxBF_;
+}
+
+inline const List< List < scalarField > >& boundaryMeasurements::massFluxBF() const
+{
+    return massFluxBF_;
+}
+
 inline const List< List < scalarField > >& boundaryMeasurements::qBF() const
 {
     return qBF_;
@@ -178,6 +188,15 @@ inline List< List < scalarField > >& boundaryMeasurements::vibrationalEBF()
 inline List< List < scalarField > >& boundaryMeasurements::electronicEBF()
 {
     return electronicEBF_;
+}
+inline List< List < scalarField > >& boundaryMeasurements::numberFluxBF()
+{
+    return numberFluxBF_;
+}
+
+inline List< List < scalarField > >& boundaryMeasurements::massFluxBF()
+{
+    return massFluxBF_;
 }
 
 inline List< List < scalarField > >& boundaryMeasurements::qBF()

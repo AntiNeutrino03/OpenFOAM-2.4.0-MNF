@@ -199,6 +199,7 @@ void dsmcPatchBoundary::measurePropertiesBeforeControl(dsmcParcel& p)
         scalar invMagUnfA = 1/max(mag(U_dot_nw)*fA, VSMALL);
             
         cloud_.boundaryFluxMeasurements().rhoNBF()[p.typeId()][wppIndex][wppLocalFace] += invMagUnfA;
+        
         if(constProps.rotationalDegreesOfFreedom() > 0)
         {
            cloud_.boundaryFluxMeasurements().rhoNIntBF()[p.typeId()][wppIndex][wppLocalFace] += invMagUnfA; 
@@ -334,6 +335,9 @@ void dsmcPatchBoundary::measurePropertiesAfterControl(dsmcParcel& p, scalar heat
         
         cloud_.boundaryFluxMeasurements().qBF()[p.typeId()][wppIndex][wppLocalFace] += deltaQ;
         cloud_.boundaryFluxMeasurements().fDBF()[p.typeId()][wppIndex][wppLocalFace] += deltaFD;
+        
+        cloud_.boundaryFluxMeasurements().numberFluxBF()[p.typeId()][wppIndex][wppLocalFace] += nParticle/fA;
+        cloud_.boundaryFluxMeasurements().massFluxBF()[p.typeId()][wppIndex][wppLocalFace] += m*nParticle/fA;
     }
 }
 

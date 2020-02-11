@@ -80,6 +80,8 @@ boundaryMeasurements::boundaryMeasurements
     rotationalDofBF_(),
     vibrationalEBF_(),
     electronicEBF_(),
+    numberFluxBF_(),
+    massFluxBF_(),
     qBF_(),
     fDBF_()
 {
@@ -101,6 +103,8 @@ boundaryMeasurements::boundaryMeasurements
     rotationalDofBF_.setSize(typeIds_.size());
     vibrationalEBF_.setSize(typeIds_.size());
     electronicEBF_.setSize(typeIds_.size());
+    numberFluxBF_.setSize(typeIds_.size());
+    massFluxBF_.setSize(typeIds_.size());
     qBF_.setSize(typeIds_.size());
     fDBF_.setSize(typeIds_.size());
     
@@ -126,6 +130,8 @@ boundaryMeasurements::boundaryMeasurements
         rotationalDofBF_[i].setSize(mesh_.boundaryMesh().size());
         vibrationalEBF_[i].setSize(mesh_.boundaryMesh().size());
         electronicEBF_[i].setSize(mesh_.boundaryMesh().size());
+        numberFluxBF_[i].setSize(mesh_.boundaryMesh().size());
+        massFluxBF_[i].setSize(mesh_.boundaryMesh().size());
         qBF_[i].setSize(mesh_.boundaryMesh().size());
         fDBF_[i].setSize(mesh_.boundaryMesh().size());
         //****//
@@ -145,6 +151,8 @@ boundaryMeasurements::boundaryMeasurements
             rotationalDofBF_[i][j].setSize(patch.size(),0.0);
             vibrationalEBF_[i][j].setSize(patch.size(),0.0);
             electronicEBF_[i][j].setSize(patch.size(),0.0);
+            numberFluxBF_[i][j].setSize(patch.size(),0.0);
+            massFluxBF_[i][j].setSize(patch.size(),0.0);
             qBF_[i][j].setSize(patch.size(),0.0);
             fDBF_[i][j].setSize(patch.size(),vector::zero);
             //****//
@@ -179,6 +187,8 @@ void boundaryMeasurements::clean()
             rotationalDofBF_[i][j] = 0.0;
             vibrationalEBF_[i][j] = 0.0;
             electronicEBF_[i][j] = 0.0;
+            numberFluxBF_[i][j] = 0.0;
+            massFluxBF_[i][j] = 0.0;
             qBF_[i][j] = 0.0;
             fDBF_[i][j] = vector::zero;
             //****//

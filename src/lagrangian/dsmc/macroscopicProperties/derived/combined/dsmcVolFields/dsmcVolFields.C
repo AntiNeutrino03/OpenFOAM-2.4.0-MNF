@@ -421,6 +421,32 @@ dsmcVolFields::dsmcVolFields
         mesh_,
         dimensionedScalar("zero", dimless, 0.0)
     ),
+    surfaceNumberFlux_
+    (
+        IOobject
+        (
+            "surfaceNumberFlux_"+ fieldName_,
+            mesh_.time().timeName(),
+            mesh_,
+            IOobject::NO_READ,
+            IOobject::NO_WRITE
+        ),
+        mesh_,
+        dimensionedScalar("zero", dimless/dimTime/dimLength/dimLength, 0.0)
+    ),
+    surfaceMassFlux_
+    (
+        IOobject
+        (
+            "surfaceMassFlux_"+ fieldName_,
+            mesh_.time().timeName(),
+            mesh_,
+            IOobject::NO_READ,
+            IOobject::NO_WRITE
+        ),
+        mesh_,
+        dimensionedScalar("zero", dimMass/dimTime/dimLength/dimLength, 0.0)
+    ),
     UMean_
     (
         IOobject
@@ -563,6 +589,8 @@ dsmcVolFields::dsmcVolFields
     totalvDofBF_(),
     speciesRhoNIntBF_(),
     speciesRhoNElecBF_(),
+    numberFluxBF_(),
+    massFluxBF_(),
     momentumBF_(),
     fDBF_(),
     vibrationalEBF_(),
@@ -719,6 +747,8 @@ dsmcVolFields::dsmcVolFields
     totalvDofBF_.setSize(mesh_.boundaryMesh().size());
     speciesRhoNIntBF_.setSize(mesh_.boundaryMesh().size());
     speciesRhoNElecBF_.setSize(mesh_.boundaryMesh().size());
+    numberFluxBF_.setSize(mesh_.boundaryMesh().size());
+    massFluxBF_.setSize(mesh_.boundaryMesh().size());
     n_.setSize(mesh_.boundaryMesh().size());
     t1_.setSize(mesh_.boundaryMesh().size());
     t2_.setSize(mesh_.boundaryMesh().size());
@@ -739,6 +769,8 @@ dsmcVolFields::dsmcVolFields
         totalvDofBF_[j].setSize(patch.size(), 0.0);
         speciesRhoNIntBF_[j].setSize(patch.size(), 0.0);
         speciesRhoNElecBF_[j].setSize(patch.size(), 0.0);
+        numberFluxBF_[j].setSize(patch.size(), 0.0);
+        massFluxBF_[j].setSize(patch.size(), 0.0);
         n_[j].setSize(patch.size(), vector::zero);
         t1_[j].setSize(patch.size(), vector::zero);
         t2_[j].setSize(patch.size(), vector::zero);
@@ -933,6 +965,8 @@ void dsmcVolFields::readIn()
         dict.readIfPresent("totalvDofBF", totalvDofBF_);
         dict.readIfPresent("speciesRhoNIntBF", speciesRhoNIntBF_);
         dict.readIfPresent("speciesRhoNElecBF", speciesRhoNElecBF_);
+        dict.readIfPresent("numberFluxBF", numberFluxBF_); 
+        dict.readIfPresent("massFluxBF_", massFluxBF_); 
         dict.readIfPresent("momentumBF", momentumBF_);
         dict.readIfPresent("fDBF", fDBF_);
         dict.readIfPresent("vibrationalEBF", vibrationalEBF_);
@@ -940,7 +974,7 @@ void dsmcVolFields::readIn()
         dict.readIfPresent("speciesRhoNBF", speciesRhoNBF_);
         dict.readIfPresent("mccSpeciesBF", mccSpeciesBF_);
         dict.readIfPresent("vibTBF", vibTBF_);
-        dict.readIfPresent("vDofBF", vDofBF_);  
+        dict.readIfPresent("vDofBF", vDofBF_);
     }
 }
 
@@ -1017,6 +1051,8 @@ void dsmcVolFields::writeOut()
         dict.add("totalvDofBF", totalvDofBF_);
         dict.add("speciesRhoNIntBF", speciesRhoNIntBF_);
         dict.add("speciesRhoNElecBF", speciesRhoNElecBF_);
+        dict.add("numberFluxBF", numberFluxBF_);
+        dict.add("massFluxBF", massFluxBF_);
         dict.add("momentumBF", momentumBF_);
         dict.add("fDBF", fDBF_);
         dict.add("vibrationalEBF", vibrationalEBF_);
@@ -1335,6 +1371,10 @@ void dsmcVolFields::calculateField()
                         cloud_.boundaryFluxMeasurements().rhoNIntBF()[i][j][k];
                             speciesRhoNElecBF_[j][k] += 
                         cloud_.boundaryFluxMeasurements().rhoNElecBF()[i][j][k];
+                        numberFluxBF_[j][k] += 
+                        cloud_.boundaryFluxMeasurements().numberFluxBF()[i][j][k];
+                        massFluxBF_[j][k] += 
+                        cloud_.boundaryFluxMeasurements().massFluxBF()[i][j][k];
                         }
                     }
                 }
@@ -2092,6 +2132,11 @@ void dsmcVolFields::calculateField()
 
                         q_.boundaryField()[j][k] = qBF_[j][k]/nAvTimeSteps;
                         fD_.boundaryField()[j][k] = fDBF_[j][k]/nAvTimeSteps;
+                        
+                        const scalar& deltaT = mesh_.time().deltaTValue();
+                        
+                        surfaceNumberFlux_.boundaryField()[j][k] = numberFluxBF_[j][k]/(nAvTimeSteps*deltaT);
+                        surfaceMassFlux_.boundaryField()[j][k] = massFluxBF_[j][k]/(nAvTimeSteps*deltaT);
                     }
 
                     p_.boundaryField()[j] = fD_.boundaryField()[j] & n_[j];
@@ -2099,6 +2144,7 @@ void dsmcVolFields::calculateField()
                     tau_.boundaryField()[j] = sqrt(
                         sqr(fD_.boundaryField()[j] & t1_[j])
                         + sqr(fD_.boundaryField()[j] & t2_[j]));
+                    
                 }
             }
 
@@ -2224,6 +2270,8 @@ void dsmcVolFields::calculateField()
             Ma_.write();
             UMean_.write();
             fD_.write();
+            surfaceMassFlux_.write();
+            surfaceNumberFlux_.write();
         }
 
         //- reset
@@ -2292,6 +2340,8 @@ void dsmcVolFields::calculateField()
                 linearKEBF_[j] = 0.0;
                 speciesRhoNIntBF_[j] = 0.0;
                 speciesRhoNElecBF_[j] = 0.0;
+                numberFluxBF_[j] = 0.0;
+                massFluxBF_[j] = 0.0;
                 rotationalEBF_[j] = 0.0;
                 rotationalDofBF_[j] = 0.0;
                 qBF_[j] = 0.0;

@@ -102,6 +102,8 @@ private:
         volScalarField velocityError_;
         volScalarField temperatureError_;
         volScalarField pressureError_;
+        volScalarField surfaceNumberFlux_;
+        volScalarField surfaceMassFlux_;
         volVectorField UMean_;
         volVectorField fD_;
         volVectorField heatFluxVector_;
@@ -170,6 +172,8 @@ private:
         List<scalarField> totalvDofBF_;
         List<scalarField> speciesRhoNIntBF_;
         List<scalarField> speciesRhoNElecBF_;
+        List<scalarField> numberFluxBF_;
+        List<scalarField> massFluxBF_;
         List<vectorField> momentumBF_;
         List<vectorField> fDBF_;
         
@@ -179,6 +183,8 @@ private:
         List< List < scalarField > > mccSpeciesBF_;
         List< List < scalarField > > vibTBF_;
         List< List < scalarField > > vDofBF_;
+        //List< List < scalarField > > numberFluxBF_;
+        //List< List < scalarField > > massFluxBF_;
         
         bool averagingAcrossManyRuns_;
         bool measureClassifications_;

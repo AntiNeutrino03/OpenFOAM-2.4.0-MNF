@@ -76,6 +76,8 @@ class boundaryMeasurements
         List< List < scalarField > > rotationalDofBF_;
         List< List < scalarField > > vibrationalEBF_;
         List< List < scalarField > > electronicEBF_;
+        List< List < scalarField > > numberFluxBF_;
+        List< List < scalarField > > massFluxBF_;
         List< List < scalarField > > qBF_;
         List< List < vectorField > > fDBF_;
 
@@ -130,6 +132,8 @@ public:
         inline const List< List < scalarField > >& rotationalDofBF() const;
         inline const List< List < scalarField > >& vibrationalEBF() const;
         inline const List< List < scalarField > >& electronicEBF() const;
+        inline const List< List < scalarField > >& numberFluxBF() const;
+        inline const List< List < scalarField > >& massFluxBF() const;
         inline const List< List < scalarField > >& qBF() const;
         inline const List< List < vectorField > >& fDBF() const;
 
@@ -149,6 +153,8 @@ public:
         inline List< List < scalarField > >& rotationalDofBF();
         inline List< List < scalarField > >& vibrationalEBF();
         inline List< List < scalarField > >& electronicEBF();
+        inline List< List < scalarField > >& numberFluxBF();
+        inline List< List < scalarField > >& massFluxBF();
         inline List< List < scalarField > >& qBF();
         inline List< List < vectorField > >& fDBF();
 
