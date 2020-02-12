@@ -356,8 +356,8 @@ void chargeExchange::reaction
         if ((EcP - ionisationEnergy) > VSMALL)
         {
             // Ionisation can occur
-            totalReactionProbability += 1.0;
-            reactionProbabilities[1] = 1.0;
+//             totalReactionProbability += 1.0;
+//             reactionProbabilities[1] = 1.0;
         }
 
         scalar heatOfReactionExchJoules = heatOfReactionExch_
@@ -724,8 +724,8 @@ void chargeExchange::reaction
         if ((EcQ - ionisationEnergy) > VSMALL)
         {
             // Ionisation can occur
-            totalReactionProbability += 1.0;
-            reactionProbabilities[1] = 1.0;
+//             totalReactionProbability += 1.0;
+//             reactionProbabilities[1] = 1.0;
         }
 
         scalar heatOfReactionExchJoules = heatOfReactionExch_

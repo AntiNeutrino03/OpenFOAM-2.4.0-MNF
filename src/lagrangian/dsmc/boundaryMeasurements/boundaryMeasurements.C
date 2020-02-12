@@ -7,26 +7,20 @@
 -------------------------------------------------------------------------------
 License
     This file is part of OpenFOAM.
-
     OpenFOAM is free software; you can redistribute it and/or modify it
     under the terms of the GNU General Public License as published by the
     Free Software Foundation; either version 2 of the License, or (at your
     option) any later version.
-
     OpenFOAM is distributed in the hope that it will be useful, but WITHOUT
     ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
     FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
     for more details.
-
     You should have received a copy of the GNU General Public License
     along with OpenFOAM; if not, write to the Free Software Foundation,
     Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
-
 Class
     boundaryMeasurements
-
 Description
-
 \*----------------------------------------------------------------------------*/
 
 #include "boundaryMeasurements.H"
@@ -80,6 +74,8 @@ boundaryMeasurements::boundaryMeasurements
     rotationalDofBF_(),
     vibrationalEBF_(),
     electronicEBF_(),
+    numberFluxBF_(),
+    massFluxBF_(),
     qBF_(),
     fDBF_()
 {
@@ -101,6 +97,8 @@ boundaryMeasurements::boundaryMeasurements
     rotationalDofBF_.setSize(typeIds_.size());
     vibrationalEBF_.setSize(typeIds_.size());
     electronicEBF_.setSize(typeIds_.size());
+    numberFluxBF_.setSize(typeIds_.size());
+    massFluxBF_.setSize(typeIds_.size());
     qBF_.setSize(typeIds_.size());
     fDBF_.setSize(typeIds_.size());
     
@@ -126,6 +124,8 @@ boundaryMeasurements::boundaryMeasurements
         rotationalDofBF_[i].setSize(mesh_.boundaryMesh().size());
         vibrationalEBF_[i].setSize(mesh_.boundaryMesh().size());
         electronicEBF_[i].setSize(mesh_.boundaryMesh().size());
+        numberFluxBF_[i].setSize(mesh_.boundaryMesh().size());
+        massFluxBF_[i].setSize(mesh_.boundaryMesh().size());
         qBF_[i].setSize(mesh_.boundaryMesh().size());
         fDBF_[i].setSize(mesh_.boundaryMesh().size());
         //****//
@@ -145,6 +145,8 @@ boundaryMeasurements::boundaryMeasurements
             rotationalDofBF_[i][j].setSize(patch.size(),0.0);
             vibrationalEBF_[i][j].setSize(patch.size(),0.0);
             electronicEBF_[i][j].setSize(patch.size(),0.0);
+            numberFluxBF_[i][j].setSize(patch.size(),0.0);
+            massFluxBF_[i][j].setSize(patch.size(),0.0);
             qBF_[i][j].setSize(patch.size(),0.0);
             fDBF_[i][j].setSize(patch.size(),vector::zero);
             //****//
@@ -179,6 +181,8 @@ void boundaryMeasurements::clean()
             rotationalDofBF_[i][j] = 0.0;
             vibrationalEBF_[i][j] = 0.0;
             electronicEBF_[i][j] = 0.0;
+            numberFluxBF_[i][j] = 0.0;
+            massFluxBF_[i][j] = 0.0;
             qBF_[i][j] = 0.0;
             fDBF_[i][j] = vector::zero;
             //****//

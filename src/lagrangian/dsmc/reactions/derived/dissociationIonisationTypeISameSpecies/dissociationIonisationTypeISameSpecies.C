@@ -313,8 +313,8 @@ void dissociationIonisationTypeISameSpecies::reaction
 
         if ((EcPP - ionisationEnergy) > VSMALL)
         {
-            totalReactionProbability += 1.0;
-            reactionProbabilities[1] = 1.0;
+//             totalReactionProbability += 1.0;
+//             reactionProbabilities[1] = 1.0;
         }
         
         scalar EcPQ = reactionProperties(cloud_, p, q).translationalEnergy() + reactionProperties(cloud_, p, q).EVibQ();
@@ -338,8 +338,8 @@ void dissociationIonisationTypeISameSpecies::reaction
 
         if ((EcPQ - ionisationEnergyQ) > VSMALL)
         {
-            totalReactionProbability += 1.0;
-            reactionProbabilities[3] = 1.0;
+//             totalReactionProbability += 1.0;
+//             reactionProbabilities[3] = 1.0;
         }
 
         // Decide if a reaction is to occur

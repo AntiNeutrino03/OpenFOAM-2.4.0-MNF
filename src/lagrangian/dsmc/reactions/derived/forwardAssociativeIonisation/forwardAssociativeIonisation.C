@@ -339,8 +339,8 @@ void forwardAssociativeIonisation::reaction
         if ((Ec - ionisationEnergy) > VSMALL)
         {
             // Ionisation can occur
-            totalReactionProbability += 1.0;
-            reactionProbabilities[0] = 1.0;
+//             totalReactionProbability += 1.0;
+//             reactionProbabilities[0] = 1.0;
         }
 
         // collision energy is the translational energy of the two atoms,

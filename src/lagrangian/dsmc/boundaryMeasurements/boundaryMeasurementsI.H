@@ -7,26 +7,19 @@
 -------------------------------------------------------------------------------
 License
     This file is part of OpenFOAM.
-
     OpenFOAM is free software; you can redistribute it and/or modify it
     under the terms of the GNU General Public License as published by the
     Free Software Foundation; either version 2 of the License, or (at your
     option) any later version.
-
     OpenFOAM is distributed in the hope that it will be useful, but WITHOUT
     ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
     FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
     for more details.
-
     You should have received a copy of the GNU General Public License
     along with OpenFOAM; if not, write to the Free Software Foundation,
     Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
-
 Class
-
-
 Description
-
 \*---------------------------------------------------------------------------*/
 
 namespace Foam
@@ -108,6 +101,16 @@ inline const List< List < scalarField > >& boundaryMeasurements::electronicEBF()
     return electronicEBF_;
 }
 
+inline const List< List < scalarField > >& boundaryMeasurements::numberFluxBF() const
+{
+    return numberFluxBF_;
+}
+
+inline const List< List < scalarField > >& boundaryMeasurements::massFluxBF() const
+{
+    return massFluxBF_;
+}
+
 inline const List< List < scalarField > >& boundaryMeasurements::qBF() const
 {
     return qBF_;
@@ -178,6 +181,15 @@ inline List< List < scalarField > >& boundaryMeasurements::vibrationalEBF()
 inline List< List < scalarField > >& boundaryMeasurements::electronicEBF()
 {
     return electronicEBF_;
+}
+inline List< List < scalarField > >& boundaryMeasurements::numberFluxBF()
+{
+    return numberFluxBF_;
+}
+
+inline List< List < scalarField > >& boundaryMeasurements::massFluxBF()
+{
+    return massFluxBF_;
 }
 
 inline List< List < scalarField > >& boundaryMeasurements::qBF()

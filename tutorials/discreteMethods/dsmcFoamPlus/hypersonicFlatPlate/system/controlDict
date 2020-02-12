@@ -50,20 +50,20 @@ runTimeModifiable true;
 adjustTimeStep  no;
 
 functions
-(
-    forces1
-    {
-        type            forces;
-        enabled         true;
-        functionObjectLibs ( "libforces.so" );
-        outputControl   outputTime;
-        patches         ( plate );
-        directForceDensity true;
-        fDName          fD_N2;
-        CofR            ( 0 0 0 );
-        log             on;
-    }
-);
+{
+/*    forces1*/
+/*    {*/
+/*        type            forces;*/
+/*        enabled         true;*/
+/*        functionObjectLibs ( "libforces.so" );*/
+/*        outputControl   outputTime;*/
+/*        patches         ( plate );*/
+/*        directForceDensity true;*/
+/*        fDName          fD_N2;*/
+/*        CofR            ( 0 0 0 );*/
+/*        log             on;*/
+/*    }*/
+};
 
 
 // ************************************************************************* //

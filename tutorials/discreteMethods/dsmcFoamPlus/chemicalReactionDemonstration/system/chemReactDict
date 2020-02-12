@@ -182,8 +182,8 @@ reactions
             heatOfReactionExch              -37483; 
             heatOfReactionIonP              -180798;
             heatOfReactionIonQ              -158053;
-            aCoeff                          0.15; //from QKRates
-            bCoeff                          0.15; //from QKRates
+            aCoeff                          0.15;
+            bCoeff                          0.0;
             allowSplitting                  yes;
             writeRatesToTerminal            no;
         }
@@ -208,38 +208,107 @@ reactions
             heatOfReactionExch              -19693;
             heatOfReactionIonP              -107457;
             heatOfReactionIonQ              -158053;
-            aCoeff                          0.085; //from QKRates
-            bCoeff                          0.65; //from QKRates
+            aCoeff                          0.1;
+            bCoeff                          0.68;
             allowSplitting                  yes;
             writeRatesToTerminal            no;
         }
     }
 
-        exchangeReaction3
-        {
-            reactionModel           dissociationIonisationExchange;
 
-            dsmcReactionProperties
-            {
-                reactionName                    reverseExchange1;
-                reactants                       (NO N);
-                chargedAtom                     no;
-                chargedMolecule                 no;
-                chargeExchange                  no;
-                productsOfExchangeReaction      (N2 O);
-                productsOfDissociatedMolecule   (N O);
-                productsOfIonisedMolecule       (NO+ E-);
-                productsOfIonisedAtom           (N+ E-);
-                heatOfReactionDiss              -75544;
-                heatOfReactionExch              37483; 
-                heatOfReactionIonP              -107457;
-                heatOfReactionIonQ              -168613;
-                aCoeff                          0.033; //from QKRates
-                bCoeff                          0.8; //from QKRates
-                allowSplitting                  yes;
-                writeRatesToTerminal            no;
-            }
+    exchangeReaction3
+    {
+        reactionModel           dissociationIonisationExchange;
+
+        dsmcReactionProperties
+        {
+            reactionName                    forwardExchange3;
+            reactants                       (NO+ N);
+            chargedAtom                     no;
+            chargedMolecule                 yes;
+            chargeExchange                  no;
+            productsOfExchangeReaction      (N2+ O);
+            productsOfIonisedAtom           (N+ E-);
+            heatOfReactionExch              -35501; 
+            heatOfReactionIonQ              -168613;
+            aCoeff                          0.05;
+            bCoeff                          0.0;
+            allowSplitting                  yes;
+            writeRatesToTerminal            no;
         }
+    }
+
+    exchangeReaction3
+    {
+        reactionModel           dissociationIonisationExchange;
+
+        dsmcReactionProperties
+        {
+            reactionName                    forwardExchange4;
+            reactants                       (NO+ O);
+            chargedAtom                     no;
+            chargedMolecule                 yes;
+            chargeExchange                  no;
+            productsOfExchangeReaction      (O2 N+);
+            productsOfIonisedAtom           (O+ E-);
+            heatOfReactionExch              -7720.55; 
+            heatOfReactionIonQ              -158053;
+            aCoeff                          0.0;
+            bCoeff                          0.0;
+            allowSplitting                  yes;
+            writeRatesToTerminal            no;
+        }
+    }
+
+    exchangeReaction4
+    {
+        reactionModel           dissociationIonisationExchange;
+
+        dsmcReactionProperties
+        {
+            reactionName                    forwardExchange5;
+            reactants                       (NO O+);
+            chargedAtom                     yes;
+            chargedMolecule                 no;
+            chargeExchange                  no;
+            productsOfExchangeReaction      (O2 N+);
+            productsOfDissociatedMolecule   (N O);
+            productsOfIonisedMolecule       (NO+ E-);
+            heatOfReactionDiss              -75500; 
+            heatOfReactionExch              -26600;
+            heatOfReactionIonP              -107457;
+            aCoeff                          0.1;
+            bCoeff                          0.5;
+            allowSplitting                  yes;
+            writeRatesToTerminal            no;
+        }
+    }
+
+    exchangeReaction3
+    {
+        reactionModel           dissociationIonisationExchange;
+
+        dsmcReactionProperties
+        {
+            reactionName                    reverseExchange1;
+            reactants                       (NO N);
+            chargedAtom                     no;
+            chargedMolecule                 no;
+            chargeExchange                  no;
+            productsOfExchangeReaction      (N2 O);
+            productsOfDissociatedMolecule   (N O);
+            productsOfIonisedMolecule       (NO+ E-);
+            productsOfIonisedAtom           (N+ E-);
+            heatOfReactionDiss              -75544;
+            heatOfReactionExch              37483; 
+            heatOfReactionIonP              -107457;
+            heatOfReactionIonQ              -168613;
+            aCoeff                          0.033; //from QKRates
+            bCoeff                          0.8; //from QKRates
+            allowSplitting                  yes;
+            writeRatesToTerminal            no;
+        }
+    }
 
     exchangeReaction4
     {
@@ -267,56 +336,117 @@ reactions
         }
     }
 
-    nitrogenDissociationIonisation4
+    exchangeReaction5
     {
-        reactionModel           moleculeElectronDissociationIonisation;
+        reactionModel           dissociationIonisationExchange;
 
         dsmcReactionProperties
         {
-            reactionName                    nitrogenDissociationIonisation4;
-            reactants                       (N2 E-);
-            productsOfDissociatedMolecule   (N N);
-            productsOfIonisedMolecule       (N2+ E-);
-            heatOfReactionDissociation      -113500;
-            heatOfReactionIonisation        -180798;
-            allowSplitting                  yes;
-            writeRatesToTerminal            no;
-        }
-    }
-
-    oxygenDissociationIonisation5
-    {
-        reactionModel           moleculeElectronDissociationIonisation;
-
-        dsmcReactionProperties
-        {
-            reactionName                    oxygenDissociationIonisation5;
-            reactants                       (O2 E-);
+            reactionName                    reverseExchange3;
+            reactants                       (O2 N+); 
+            chargedAtom                     yes;
+            chargedMolecule                 no;
+            chargeExchange                  yes;
+            productsOfExchangeReaction      (NO O+);
+            productsOfChargeExchange        (O2+ N);
             productsOfDissociatedMolecule   (O O);
             productsOfIonisedMolecule       (O2+ E-);
-            heatOfReactionDissociation      -59500;
-            heatOfReactionIonisation        -140066;
+            heatOfReactionDiss              -59500;
+            heatOfReactionExch              12767.63;
+            heatOfReactionChargeExch        28601;
+            heatOfReactionIonP              -140066;
+            aCoeff                          0.15;
+            bCoeff                          0.4;
+            aCoeffChargeExchange            0.0;
+            bCoeffChargeExchange            0.0;
             allowSplitting                  yes;
             writeRatesToTerminal            no;
         }
     }
 
-    niticOxideDissociationIonisation2
+    exchangeReaction6
     {
-        reactionModel           moleculeElectronDissociationIonisation;
+        reactionModel           dissociationIonisationExchange;
 
         dsmcReactionProperties
         {
-            reactionName                    niticOxideDissociationIonisation2;
-            reactants                       (NO E-);
-            productsOfDissociatedMolecule   (N O);
-            productsOfIonisedMolecule       (NO+ E-);
-            heatOfReactionDissociation      -75500;
-            heatOfReactionIonisation        -107457;
+            reactionName                    reverseExchange4;
+            reactants                       (N2 O+);
+            chargedAtom                     yes;
+            chargedMolecule                 no;
+            chargeExchange                  yes;
+            productsOfExchangeReaction      (NO+ N);
+            productsOfChargeExchange        (N2+ O);
+            productsOfDissociatedMolecule   (N N);
+            productsOfIonisedMolecule       (N2+ E-);
+            dissociationPossible            yes;
+            heatOfReactionExch              12767.63;
+            heatOfReactionChargeExch        -22800.96;
+            heatOfReactionIonP              -180798;
+            heatOfReactionDiss              -113500;
+            aCoeff                          0.0;
+            bCoeff                          0.0;
+            aCoeffChargeExchange            0.5;
+            bCoeffChargeExchange            0.2;
             allowSplitting                  yes;
             writeRatesToTerminal            no;
         }
     }
+
+    exchangeReaction7
+    {
+        reactionModel           dissociationIonisationExchange;
+
+        dsmcReactionProperties
+        {
+            reactionName                    reverseChargeExchange5;
+            reactants                       (O2+ N);
+            chargedAtom                     no;
+            chargedMolecule                 yes;
+            chargeExchange                  yes;
+            productsOfExchangeReaction      (NO+ O);
+            productsOfChargeExchange        (O2 N+);
+            productsOfIonisedAtom           (N+ E-);
+            dissociationPossible            no;
+            heatOfReactionExch              48602.06; 
+            heatOfReactionChargeExch        -28601;
+            heatOfReactionIonQ              -168613;
+            aCoeff                          0.0;
+            bCoeff                          0.0;
+            aCoeffChargeExchange            0.02;
+            bCoeffChargeExchange            0.1;
+            allowSplitting                  yes;
+            writeRatesToTerminal            no;
+        }
+    }
+
+    exchangeReaction7
+    {
+        reactionModel           dissociationIonisationExchange;
+
+        dsmcReactionProperties
+        {
+            reactionName                    reverseChargeExchange6;
+            reactants                       (N2+ O); 
+            chargedAtom                     no;
+            chargedMolecule                 yes;
+            chargeExchange                  yes;
+            productsOfExchangeReaction      (NO+ N);
+            productsOfChargeExchange        (N2 O+);
+            productsOfIonisedAtom           (O+ E-);
+            dissociationPossible            no;
+            heatOfReactionExch              35501.23;
+            heatOfReactionIonQ              -158053;
+            heatOfReactionChargeExch        22800;
+            aCoeff                          0.02;
+            bCoeff                          0.8;
+            aCoeffChargeExchange            0.6;
+            bCoeffChargeExchange            0.35;
+            allowSplitting                  yes;
+            writeRatesToTerminal            no;
+        }
+    }
+
 
     atomicNitrogenIonisation
     {
@@ -346,54 +476,6 @@ reactions
             allowSplitting                  yes;
             writeRatesToTerminal            no;
         }
-    }
-
-    atomicNitrogenIonisation2
-    {
-        reactionModel         atomAtomIonisationDissimilarSpecies;
-
-        dsmcReactionProperties
-        {
-            reactionName                    atomicNitrogenIonisation2;
-            reactants                       (N N+);
-            chargedAtom                     yes;
-            productsOfIonisedAtom           (N+ E-);
-            heatOfReactionIonisation        -168613;
-            allowSplitting                  yes;
-            writeRatesToTerminal            no;
-        }
-    }
-
-    atomicOxygenIonisation2
-    {
-        reactionModel           atomAtomIonisationDissimilarSpecies;
-
-        dsmcReactionProperties
-        {
-            reactionName                    atomicOxygenIonisation2;
-            reactants                       (O N+);
-            chargedAtom                     yes;
-            productsOfIonisedAtom           (O+ E-);
-            heatOfReactionIonisation        -158053;
-            allowSplitting                  yes;
-            writeRatesToTerminal            no;
-       }
-    }
-
-    atomicOxygenIonisation3
-    {
-        reactionModel           atomAtomIonisationDissimilarSpecies;
-
-       dsmcReactionProperties
-        {
-            reactionName                    atomicOxygenIonisation3;
-            reactants                       (O O+);
-            chargedAtom                     yes;
-            productsOfIonisedAtom           (O+ E-);
-            heatOfReactionIonisation        -158053;
-            allowSplitting                  yes;
-            writeRatesToTerminal            no;
-       }
     }
 
     oxygenDissociationIonisation6
@@ -493,28 +575,6 @@ reactions
             productsOfIonisedMolecule       (NO+ E-);
             heatOfReactionDissociation      -75500; 
             heatOfReactionIonisation        -107457;
-            allowSplitting                  yes;
-            writeRatesToTerminal            no;
-        }
-    }
-
-    exchangeReaction5
-    {
-        reactionModel           dissociationIonisationExchange;
-
-        dsmcReactionProperties
-        {
-            reactionName                    forwardExchange3;
-            reactants                       (NO+ N);
-            chargedAtom                     no;
-            chargedMolecule                 yes;
-            chargeExchange                  no;
-            productsOfExchangeReaction	    (N2+ O);
-            productsOfIonisedAtom           (N+ E-);
-            heatOfReactionExch              -35501; 
-            heatOfReactionIonQ              -168613;
-            aCoeff                          0.05; //from QKRates
-            bCoeff                          0.0; //from QKRates
             allowSplitting                  yes;
             writeRatesToTerminal            no;
         }
@@ -716,7 +776,8 @@ reactions
         }
     }
 
-    chargeExchange5
+
+    chargeExchange7
     {
         reactionModel           chargeExchange;
 
@@ -738,7 +799,7 @@ reactions
         }
     }
 
-    chargeExchange6
+    chargeExchange8
     {
         reactionModel           chargeExchange;
 
@@ -758,14 +819,14 @@ reactions
         }
     }
 
-    chargeExchange7
+    chargeExchange9
     {
         reactionModel           chargeExchange;
 
         dsmcReactionProperties
         {
             reactionName                    reverseChargeExchange3;
-            reactants                       (NO O2+);
+            reactants                       (NO O2+); //also has an exchange reaction...
             chargeExchangeProducts          (O2 NO+);
             dissociationProducts            (N O);
             ionisationProducts              (NO+ E-);
@@ -780,13 +841,13 @@ reactions
         }
     }
 
-    chargeExchange8
+    chargeExchange10
     {
         reactionModel           chargeExchange;
 
         dsmcReactionProperties
         {
-            reactionName                    reverseChargeExchange1;
+            reactionName                    reverseChargeExchange4;
             reactants                       (O2 O+);
             chargeExchangeProducts          (O2+ O);
             dissociationProducts            (O O);
@@ -797,22 +858,6 @@ reactions
             heatOfReactionIonisation        -140066;
             aCoeff                          0.5;
             bCoeff                          0.1;
-            allowSplitting                  yes;
-            writeRatesToTerminal            no;
-        }
-    }
-
-
-    atomIonIonisation1
-    {
-        reactionModel           atomIonIonisation;
-
-        dsmcReactionProperties
-        {
-            reactionName                    atomIonIonisation1;
-            reactants              	        (O NO+);
-            productsOfIonisedAtom           (O+ E-);
-            heatOfReactionIonisation        -158053;
             allowSplitting                  yes;
             writeRatesToTerminal            no;
         }

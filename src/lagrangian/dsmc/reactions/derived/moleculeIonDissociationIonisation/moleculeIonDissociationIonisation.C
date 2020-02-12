@@ -326,8 +326,8 @@ void moleculeIonDissociationIonisation::reaction
         if ((EcPP - ionisationEnergy) > VSMALL)
         {
             // Ionisation can occur
-            totalReactionProbability += 1.0;
-            reactionProbabilities[1] = 1.0;
+//             totalReactionProbability += 1.0;
+//             reactionProbabilities[1] = 1.0;
         }
 
         // Decide if a reaction is to occur
@@ -450,8 +450,8 @@ void moleculeIonDissociationIonisation::reaction
 
         if ((EcQP - ionisationEnergy) > VSMALL)
         {
-            totalReactionProbability += 1.0;
-            reactionProbabilities[1] = 1.0;
+//             totalReactionProbability += 1.0;
+//             reactionProbabilities[1] = 1.0;
         }
         // Decide if a reaction is to occur
 

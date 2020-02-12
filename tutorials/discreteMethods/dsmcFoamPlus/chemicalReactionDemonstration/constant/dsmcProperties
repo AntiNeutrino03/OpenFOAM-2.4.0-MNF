@@ -26,7 +26,12 @@ chemicalReactions               true;
 
 //Collision Partner Selection Model
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-collisionPartnerSelectionModel      noTimeCounter;
+collisionPartnerSelectionModel      noTimeCounterSubCycled;
+
+noTimeCounterSubCycledProperties
+{
+    nSubCycles      30;
+}
 
 // Axisymmetric Properties
 // ~~~~~~~~~~~~~~~~~~

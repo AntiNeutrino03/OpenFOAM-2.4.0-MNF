@@ -170,14 +170,6 @@ void Foam::dsmcCloud::addElectrons()
             {
                 //found an ion, add an electron here
                 
-                //electron temperature will be zero if there have been no
-                //electrons in the cell during the simulation
-                
-//                 label cellI = p->cell();
-//                 vector position = p->position();
-//                 label tetFaceI = p->tetFace();
-//                 label tetPtI = p->tetPt();
-                
                 vector position = p->position();
                 
                 label cellI = -1;
@@ -192,15 +184,18 @@ void Foam::dsmcCloud::addElectrons()
                     tetPtI
                 );
                 
+                //electron temperature will be zero if there have been no
+                //electrons in the cell during the simulation
+                
                 if(electronTemperature_[cellI] < VSMALL)
                 {
-                    electronTemperature_[cellI] = 6000.0;
+                    electronTemperature_[cellI] = 1000.0;
                 }
-                if(electronTemperature_[cellI] > 8.0e4)
+                if(electronTemperature_[cellI] > 3e4)
                 {
-                    electronTemperature_[cellI] = 30000.0;
+                    electronTemperature_[cellI] = 1000.0;
                 }
-                    
+
 
                 vector electronVelocity = equipartitionLinearVelocity
                     (
@@ -904,11 +899,11 @@ void Foam::dsmcCloud::evolve()
     controllers_.controlBeforeMove();//****
     boundaries_.controlBeforeMove();//****
     
-//     if(charged_)
-//     {
-//         //Remove electrons
-//         removeElectrons();
-//     }
+    if(charged_)
+    {
+        //Remove electrons
+        removeElectrons();
+    }
     
     if(adsorption_)
     {
@@ -927,13 +922,13 @@ void Foam::dsmcCloud::evolve()
         buildCellOccupancy();
     }
 
-//     if(charged_)
-//     {
-//         //Add electrons back after the move function
-//         addElectrons();
-//         // Update cell occupancy
-//         buildCellOccupancy();
-//     }
+    if(charged_)
+    {
+        //Add electrons back after the move function
+        addElectrons();
+        // Update cell occupancy
+        buildCellOccupancy();
+    }
     controllers_.controlBeforeCollisions();//****
     boundaries_.controlBeforeCollisions();//****
 //     Info << "collisions" << endl;

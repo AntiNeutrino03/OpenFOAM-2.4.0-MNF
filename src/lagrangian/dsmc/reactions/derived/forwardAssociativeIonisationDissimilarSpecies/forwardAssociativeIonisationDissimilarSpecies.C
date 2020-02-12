@@ -404,8 +404,8 @@ void forwardAssociativeIonisationDissimilarSpecies::reaction
         if ((Ec - ionisationEnergy) > VSMALL)
         {
             // Ionisation can occur
-            totalReactionProbability += 1.0;
-            reactionProbabilities[0] = 1.0;
+//             totalReactionProbability += 1.0;
+//             reactionProbabilities[0] = 1.0;
         }
 
         ionisationEnergy = cloud_.constProps(typeIdQ).ionisationTemperature()
@@ -417,8 +417,8 @@ void forwardAssociativeIonisationDissimilarSpecies::reaction
         if ((Ec - ionisationEnergy) > VSMALL)
         {
             // Ionisation can occur
-            totalReactionProbability += 1.0;
-            reactionProbabilities[1] = 1.0;
+//             totalReactionProbability += 1.0;
+//             reactionProbabilities[1] = 1.0;
         }
 
         Ec = reactionProperties(cloud_, p, q).translationalEnergy() + reactionProperties(cloud_, p, q).EEleP();
@@ -432,7 +432,7 @@ void forwardAssociativeIonisationDissimilarSpecies::reaction
         {
             vibLevelIntermediate = cloud_.postCollisionVibrationalEnergyLevel
                 (
-                    false,
+                    true,
                     0.0,
                     iMax,
                     thetaVIntermediate,
@@ -678,8 +678,8 @@ void forwardAssociativeIonisationDissimilarSpecies::reaction
         if ((Ec - ionisationEnergy) > VSMALL)
         {
             // Ionisation can occur
-            totalReactionProbability += 1.0;
-            reactionProbabilities[1] = 1.0;
+//             totalReactionProbability += 1.0;
+//             reactionProbabilities[1] = 1.0;
         }
 
         ionisationEnergy = cloud_.constProps(typeIdQ).ionisationTemperature()
@@ -691,8 +691,8 @@ void forwardAssociativeIonisationDissimilarSpecies::reaction
         if ((Ec - ionisationEnergy) > VSMALL)
         {
             // Ionisation can occur
-            totalReactionProbability += 1.0;
-            reactionProbabilities[0] = 1.0;
+//             totalReactionProbability += 1.0;
+//             reactionProbabilities[0] = 1.0;
         }
 
         Ec = reactionProperties(cloud_, p, q).translationalEnergy() + reactionProperties(cloud_, p, q).EEleQ();

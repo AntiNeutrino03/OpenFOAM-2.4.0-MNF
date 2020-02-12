@@ -7,34 +7,25 @@
 -------------------------------------------------------------------------------
 License
     This file is part of OpenFOAM.
-
     OpenFOAM is free software; you can redistribute it and/or modify it
     under the terms of the GNU General Public License as published by the
     Free Software Foundation; either version 2 of the License, or (at your
     option) any later version.
-
     OpenFOAM is distributed in the hope that it will be useful, but WITHOUT
     ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
     FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
     for more details.
-
     You should have received a copy of the GNU General Public License
     along with OpenFOAM; if not, write to the Free Software Foundation,
     Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
-
 Class
     dsmcVolFields
-
 Description
     Geometric field for temperature, density, velocity, pressure.
-
-
-
 SourceFiles
     dsmcVolFieldsI.H
     dsmcVolFields.C
     dsmcVolFieldsIO.C
-
 \*---------------------------------------------------------------------------*/
 
 #ifndef dsmcVolFields_H
@@ -102,6 +93,8 @@ private:
         volScalarField velocityError_;
         volScalarField temperatureError_;
         volScalarField pressureError_;
+        volScalarField surfaceNumberFlux_;
+        volScalarField surfaceMassFlux_;
         volVectorField UMean_;
         volVectorField fD_;
         volVectorField heatFluxVector_;
@@ -170,6 +163,8 @@ private:
         List<scalarField> totalvDofBF_;
         List<scalarField> speciesRhoNIntBF_;
         List<scalarField> speciesRhoNElecBF_;
+        List<scalarField> numberFluxBF_;
+        List<scalarField> massFluxBF_;
         List<vectorField> momentumBF_;
         List<vectorField> fDBF_;
         
@@ -179,6 +174,8 @@ private:
         List< List < scalarField > > mccSpeciesBF_;
         List< List < scalarField > > vibTBF_;
         List< List < scalarField > > vDofBF_;
+        //List< List < scalarField > > numberFluxBF_;
+        //List< List < scalarField > > massFluxBF_;
         
         bool averagingAcrossManyRuns_;
         bool measureClassifications_;
@@ -242,4 +239,3 @@ public:
 #endif
 
 // ************************************************************************* //
-

@@ -433,8 +433,8 @@ void moleculeAtomDissociationIonisation::reaction
 
         if ((EcPPIon - ionisationEnergy) > VSMALL)
         {
-            totalReactionProbability += 1.0;
-            reactionProbabilities[0] = 1.0;
+//             totalReactionProbability += 1.0;
+//             reactionProbabilities[0] = 1.0;
         }
 
         ionisationEnergy = cloud_.constProps(typeIdQ).ionisationTemperature()
@@ -445,8 +445,8 @@ void moleculeAtomDissociationIonisation::reaction
 
         if ((EcPPIon - ionisationEnergy) > VSMALL)
         {
-            totalReactionProbability += 1.0;
-            reactionProbabilities[1] = 1.0;
+//             totalReactionProbability += 1.0;
+//             reactionProbabilities[1] = 1.0;
         }
 
         scalar EcPPDiss = 0.0;
@@ -588,8 +588,8 @@ void moleculeAtomDissociationIonisation::reaction
 
         if ((EcPQIon - ionisationEnergy) > VSMALL)
         {
-            totalReactionProbability += 1.0;
-            reactionProbabilities[0] = 1.0;
+//             totalReactionProbability += 1.0;
+//             reactionProbabilities[0] = 1.0;
         }
 
         ionisationEnergy = cloud_.constProps(typeIdP).ionisationTemperature()
@@ -600,8 +600,8 @@ void moleculeAtomDissociationIonisation::reaction
 
         if ((EcPQIon - ionisationEnergy) > VSMALL)
         {
-            totalReactionProbability += 1.0;
-            reactionProbabilities[1] = 1.0;
+//             totalReactionProbability += 1.0;
+//             reactionProbabilities[1] = 1.0;
         }
 
         scalar EcPQDiss = 0.0;

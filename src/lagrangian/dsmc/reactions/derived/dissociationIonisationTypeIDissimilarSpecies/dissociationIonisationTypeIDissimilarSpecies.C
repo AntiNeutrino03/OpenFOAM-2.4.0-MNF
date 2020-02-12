@@ -366,8 +366,8 @@ void dissociationIonisationTypeIDissimilarSpecies::reaction
         if ((EcPP - ionisationEnergy) > VSMALL)
         {
             // Ionisation can occur
-            totalReactionProbability += 1.0;
-            reactionProbabilities[1] = 1.0;
+//             totalReactionProbability += 1.0;
+//             reactionProbabilities[1] = 1.0;
         }
 
         scalar EcQP = 0.0;
@@ -395,8 +395,8 @@ void dissociationIonisationTypeIDissimilarSpecies::reaction
         if ((EcQP - ionisationEnergy) > VSMALL)
         {
             // Ionisation can occur
-            totalReactionProbability += 1.0;
-            reactionProbabilities[3] = 1.0;
+//             totalReactionProbability += 1.0;
+//             reactionProbabilities[3] = 1.0;
         }
 
         // Decide if a reaction is to occur
@@ -573,8 +573,8 @@ void dissociationIonisationTypeIDissimilarSpecies::reaction
 
         if ((EcPQ - ionisationEnergy) > VSMALL)
         {
-            totalReactionProbability += 1.0;
-            reactionProbabilities[1] = 1.0;
+//             totalReactionProbability += 1.0;
+//             reactionProbabilities[1] = 1.0;
         }
 
         scalar EcQP = 0.0;
@@ -601,8 +601,8 @@ void dissociationIonisationTypeIDissimilarSpecies::reaction
 
         if ((EcQP - ionisationEnergy) > VSMALL)
         {
-            totalReactionProbability += 1.0;
-            reactionProbabilities[3] = 1.0;
+//             totalReactionProbability += 1.0;
+//             reactionProbabilities[3] = 1.0;
         }
         // Decide if a reaction is to occur
 

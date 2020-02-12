@@ -241,7 +241,7 @@ void dissociationIonisationExchange::setProperties()
         // reading in products
 
         const List<word> chargeExchangeProductMolecules
-        (propsDict_.lookup("productsOfChargeExchangeReaction"));
+        (propsDict_.lookup("productsOfChargeExchange"));
 
         if (chargeExchangeProductMolecules.size() != 2)
         {
@@ -618,8 +618,8 @@ void dissociationIonisationExchange::reaction
             if ((EcPQ - ionisationEnergy) > VSMALL)
             {
                 // Ionisation can occur
-                totalReactionProbability += 1.0;
-                reactionProbabilities[1] = 1.0;
+//                 totalReactionProbability += 1.0;
+//                 reactionProbabilities[1] = 1.0;
             }
         }
 
@@ -637,8 +637,8 @@ void dissociationIonisationExchange::reaction
             if ((EcPQ - ionisationEnergy) > VSMALL)
             {
                 // Ionisation can occur
-                totalReactionProbability += 1.0;
-                reactionProbabilities[2] = 1.0;
+//                 totalReactionProbability += 1.0;
+//                 reactionProbabilities[2] = 1.0;
             }
         }
 
@@ -790,7 +790,7 @@ void dissociationIonisationExchange::reaction
                         }
                     }
 
-                    // Calculate the probability of it occuring
+                    // Calculate the probability of it occurring
                     scalar summation = 0.0;
 
                     for (label i = 0; i <= nLevel; i++)
@@ -862,12 +862,12 @@ void dissociationIonisationExchange::reaction
                             exchangeReaction = true;
                             break;
                         }
-//                         if (i == 4)
-//                         {
-//                             // Exchange reaction is to occur
-//                             chargeExchangeReaction = true;
-//                             break;
-//                         }
+                        if (i == 4)
+                        {
+                            // Exchange reaction is to occur
+                            chargeExchangeReaction = true;
+                            break;
+                        }
                     }
                 }
             }
@@ -1039,91 +1039,115 @@ void dissociationIonisationExchange::reaction
             }
         }
 
-//         if (chargeExchangeReaction)
-//         {
-//             relax_ = false;
-// 
-//             nTotChargeExchangeReactions_++;
-//             nChargeExchangeReactionsPerTimeStep_++;
-// 
-//             if (allowSplitting_)
-//             {
-//                 relax_ = false;
-// 
-//                 scalar heatOfReactionChargeExchJoules =
-//                     heatOfReactionChargeExchange_*physicoChemical::k.value();
-// 
-//                 scalar translationalEnergy = reactionProperties(cloud_, p, q).translationalEnergy();
-// 
-//                 translationalEnergy += heatOfReactionChargeExchJoules;
-// 
-//                 translationalEnergy += reactionProperties(cloud_, p, q).ERotP() + reactionProperties(cloud_, p, q).EVibP() + reactionProperties(cloud_, p, q).EEleP()
-//                                         + reactionProperties(cloud_, p, q).ERotQ() + reactionProperties(cloud_, p, q).EEleQ();
-// 
-//                 scalar relVel = sqrt((2.0*translationalEnergy)/reactionProperties(cloud_, p, q).mR());
-// 
-//                 // Variable Hard Sphere collision part for collision of
-//                 // molecules
-//                 scalar cosTheta = 2.0*cloud_.rndGen().scalar01() - 1.0;
-// 
-//                 scalar sinTheta = sqrt(1.0 - cosTheta*cosTheta);
-// 
-//                 scalar phi = twoPi*cloud_.rndGen().scalar01();
-// 
-//                 vector postCollisionRelU =
-//                     relVel
-//                     *vector
-//                         (
-//                             cosTheta,
-//                             sinTheta*cos(phi),
-//                             sinTheta*sin(phi)
-//                         );
-// 
-//                 scalar mP = cloud_.constProps(chargeExchangeProductIds_[0]).mass();
-//                 scalar mQ = cloud_.constProps(chargeExchangeProductIds_[1]).mass();
-// 
-//                 reactionProperties(cloud_, p, q).UP() = reactionProperties(cloud_, p, q).Ucm() + (postCollisionRelU*mQ/(mP + mQ));
-//                 reactionProperties(cloud_, p, q).UQ() = reactionProperties(cloud_, p, q).Ucm() - (postCollisionRelU*mP/(mP + mQ));
-// 
-//                 p.typeId() = chargeExchangeProductIds_[0];
-//                 p.U() = reactionProperties(cloud_, p, q).UP();
-//                 p.ERot() = 0.0;
-// 
-//                 label id0 = chargeExchangeProductIds_[0];
-// 
-//                 label rDoF0 =
-//                     cloud_.constProps(id0).rotationalDegreesOfFreedom();
-// 
-//                 if (rDoF0 > VSMALL)
-//                 {
-//                     p.vibLevel().setSize(1, 0);
-//                 }
-//                 else
-//                 {
-//                     p.vibLevel().setSize(0, 0);
-//                 }
-//                 p.ELevel() = 0;
-// 
-//                 q.typeId() = chargeExchangeProductIds_[1];
-//                 q.U() = reactionProperties(cloud_, p, q).UQ();
-//                 q.ERot() = 0.0;
-// 
-//                 label id1 = chargeExchangeProductIds_[1];
-// 
-//                 label rDoF1 =
-//                     cloud_.constProps(id1).rotationalDegreesOfFreedom();
-// 
-//                 if (rDoF1 > VSMALL)
-//                 {
-//                     q.vibLevel().setSize(1, 0);
-//                 }
-//                 else
-//                 {
-//                     q.vibLevel().setSize(0, 0);
-//                 }
-//                 q.ELevel() = 0;
-//             }
-//         }
+        if (chargeExchangeReaction)
+        {
+            relax_ = false;
+
+            nTotChargeExchangeReactions_++;
+            nChargeExchangeReactionsPerTimeStep_++;
+
+            if (allowSplitting_)
+            {
+                
+                const label typeIdMol = chargeExchangeProductIds_[0];
+                const label typeIdAtom = chargeExchangeProductIds_[1];
+                
+                scalar heatOfReactionChargeExchJoules =
+                    heatOfReactionChargeExchange_*physicoChemical::k.value();
+
+                scalar translationalEnergy = reactionProperties(cloud_, p, q).translationalEnergy();
+
+                translationalEnergy += heatOfReactionChargeExchJoules;
+
+                translationalEnergy += reactionProperties(cloud_, p, q).ERotP() + reactionProperties(cloud_, p, q).EVibP() + reactionProperties(cloud_, p, q).EEleP()
+                                        + reactionProperties(cloud_, p, q).ERotQ() + reactionProperties(cloud_, p, q).EVibQ() + reactionProperties(cloud_, p, q).EEleQ();
+                                        
+                const scalar& mPExch = cloud_.constProps(typeIdAtom).mass();
+                const scalar& mQExch = cloud_.constProps(typeIdMol).mass();
+
+                scalar mRExch = mPExch*mQExch/(mPExch + mQExch);
+
+                scalar relVel = sqrt((2.0*translationalEnergy)/mRExch);
+
+                // Variable Hard Sphere collision part for collision of
+                // molecules
+                scalar cosTheta = 2.0*cloud_.rndGen().scalar01() - 1.0;
+
+                scalar sinTheta = sqrt(1.0 - cosTheta*cosTheta);
+
+                scalar phi = twoPi*cloud_.rndGen().scalar01();
+
+                vector postCollisionRelU =
+                    relVel
+                    *vector
+                        (
+                            cosTheta,
+                            sinTheta*cos(phi),
+                            sinTheta*sin(phi)
+                        );
+
+                vector UP = reactionProperties(cloud_, p, q).Ucm() + (postCollisionRelU*mQExch/(mPExch + mQExch));
+                vector UQ = reactionProperties(cloud_, p, q).Ucm() - (postCollisionRelU*mPExch/(mPExch + mQExch));
+                
+                vector positionP(p.position());
+
+                label cell = -1;
+                label tetFace = -1;
+                label tetPt = -1;
+
+                mesh_.findCellFacePt
+                (
+                    positionP,
+                    cell,
+                    tetFace,
+                    tetPt
+                );
+
+                scalar RWFp = p.RWF();
+                labelList vibLevelAtom(0, 0);
+                
+                p.position() = positionP;
+                p.U() = UP;
+                p.RWF() = RWFp;
+                p.ERot() = 0.0;
+                p.ELevel() = 0;
+                p.cell() = cell;
+                p.tetFace() = tetFace;
+                p.tetPt() = tetPt;
+                p.typeId() = typeIdAtom;
+                p.newParcel() = 0;
+                p.vibLevel() = vibLevelAtom;
+
+                vector positionQ(q.position());
+
+                cell = -1;
+                tetFace = -1;
+                tetPt = -1;
+
+                mesh_.findCellFacePt
+                (
+                    positionQ,
+                    cell,
+                    tetFace,
+                    tetPt
+                );
+
+                scalar RWFq = q.RWF();
+                labelList vibLevelMol(1, 0);
+                
+                q.position() = positionQ;
+                q.U() = UQ;
+                q.RWF() = RWFq;
+                q.ERot() = 0.0;
+                q.ELevel() = 0;
+                q.cell() = cell;
+                q.tetFace() = tetFace;
+                q.tetPt() = tetPt;
+                q.typeId() = typeIdMol;
+                q.newParcel() = 0;
+                q.vibLevel() = vibLevelMol;
+            }
+        }
     }
 
     // if q is the molecule and p is the atom...
@@ -1173,8 +1197,8 @@ void dissociationIonisationExchange::reaction
             if ((EcPQ - ionisationEnergy) > VSMALL)
             {
                 // Ionisation can occur
-                totalReactionProbability += 1.0;
-                reactionProbabilities[1] = 1.0;
+//                 totalReactionProbability += 1.0;
+//                 reactionProbabilities[1] = 1.0;
             }
         }
 
@@ -1189,8 +1213,8 @@ void dissociationIonisationExchange::reaction
             if ((EcPQ - ionisationEnergy) > VSMALL)
             {
                 // Ionisation can occur
-                totalReactionProbability += 1.0;
-                reactionProbabilities[2] = 1.0;
+//                 totalReactionProbability += 1.0;
+//                 reactionProbabilities[2] = 1.0;
             }
         }
 
@@ -1412,12 +1436,12 @@ void dissociationIonisationExchange::reaction
                             exchangeReaction = true;
                             break;
                         }
-//                         if (i == 4)
-//                         {
-//                             // Exchange reaction is to occur
-//                             chargeExchangeReaction = true;
-//                             break;
-//                         }
+                        if (i == 4)
+                        {
+                            // Exchange reaction is to occur
+                            chargeExchangeReaction = true;
+                            break;
+                        }
                     }
                 }
             }
@@ -1593,82 +1617,114 @@ void dissociationIonisationExchange::reaction
             }
         }
 
-//         if (chargeExchangeReaction)
-//         {
-//             nTotChargeExchangeReactions_++;
-//             nChargeExchangeReactionsPerTimeStep_++;
-// 
-//             if (allowSplitting_)
-//             {
-//                 relax_ = false;
-// 
-//                 scalar heatOfReactionChargeExchJoules =
-//                     heatOfReactionChargeExchange_*physicoChemical::k.value();
-//                     
-//                 scalar translationalEnergy = reactionProperties(cloud_, p, q).translationalEnergy();
-// 
-//                 translationalEnergy += heatOfReactionChargeExchJoules;
-// 
-//                 translationalEnergy += reactionProperties(cloud_, p, q).ERotP() + reactionProperties(cloud_, p, q).EEleP()
-//                                         + reactionProperties(cloud_, p, q).ERotQ() + reactionProperties(cloud_, p, q).EVibQ() + reactionProperties(cloud_, p, q).EEleQ();
-// 
-//                 scalar relVel = sqrt((2.0*translationalEnergy)/reactionProperties(cloud_, p, q).mR());
-// 
-//                 // Variable Hard Sphere collision part for collision of
-//                 // molecules
-//                 scalar cosTheta = 2.0*cloud_.rndGen().scalar01() - 1.0;
-// 
-//                 scalar sinTheta = sqrt(1.0 - cosTheta*cosTheta);
-// 
-//                 scalar phi = twoPi*cloud_.rndGen().scalar01();
-// 
-//                 vector postCollisionRelU =
-//                     relVel
-//                     *vector
-//                         (
-//                             cosTheta,
-//                             sinTheta*cos(phi),
-//                             sinTheta*sin(phi)
-//                         );
-// 
-//                 scalar mP = cloud_.constProps(chargeExchangeProductIds_[0]).mass();
-//                 scalar mQ = cloud_.constProps(chargeExchangeProductIds_[1]).mass();
-// 
-//                 reactionProperties(cloud_, p, q).UP() = reactionProperties(cloud_, p, q).Ucm() + (postCollisionRelU*mQ/(mP + mQ));
-//                 reactionProperties(cloud_, p, q).UQ() = reactionProperties(cloud_, p, q).Ucm() - (postCollisionRelU*mP/(mP + mQ));
-// 
-//                 p.typeId() = chargeExchangeProductIds_[0];
-//                 p.U() = reactionProperties(cloud_, p, q).UP();
-//                 p.ERot() = 0.0;
-//                 if (cloud_.constProps(chargeExchangeProductIds_[0]).
-//                                         rotationalDegreesOfFreedom()
-//                     > VSMALL)
-//                 {
-//                     p.vibLevel().setSize(1, 0);
-//                 }
-//                 else
-//                 {
-//                     p.vibLevel().setSize(0, 0);
-//                 }
-//                 p.ELevel() = 0;
-// 
-//                 q.typeId() = chargeExchangeProductIds_[1];
-//                 q.U() = reactionProperties(cloud_, p, q).UQ();
-//                 q.ERot() = 0.0;
-// 
-//                 if (cloud_.constProps(chargeExchangeProductIds_[1]).
-//                                         rotationalDegreesOfFreedom()
-//                     > VSMALL)
-//                 {
-//                     q.vibLevel().setSize(1, 0);
-//                 }
-//                 else
-//                 {
-//                     q.vibLevel().setSize(0, 0);
-//                 }
-//                 q.ELevel() = 0;
-//             }
-//         }
+        if (chargeExchangeReaction)
+        {
+            nTotChargeExchangeReactions_++;
+            nChargeExchangeReactionsPerTimeStep_++;
+
+            if (allowSplitting_)
+            {
+                relax_ = false;
+                
+                const label typeIdMol = chargeExchangeProductIds_[0];
+                const label typeIdAtom = chargeExchangeProductIds_[1];
+                
+                scalar heatOfReactionChargeExchJoules =
+                    heatOfReactionChargeExchange_*physicoChemical::k.value();
+
+                scalar translationalEnergy = reactionProperties(cloud_, p, q).translationalEnergy();
+
+                translationalEnergy += heatOfReactionChargeExchJoules;
+
+                translationalEnergy += reactionProperties(cloud_, p, q).ERotP() + reactionProperties(cloud_, p, q).EVibP() + reactionProperties(cloud_, p, q).EEleP()
+                                        + reactionProperties(cloud_, p, q).ERotQ() + reactionProperties(cloud_, p, q).EVibQ() + reactionProperties(cloud_, p, q).EEleQ();
+                                        
+                const scalar& mPExch = cloud_.constProps(typeIdMol).mass();
+                const scalar& mQExch = cloud_.constProps(typeIdAtom).mass();
+
+                scalar mRExch = mPExch*mQExch/(mPExch + mQExch);
+
+                scalar relVel = sqrt((2.0*translationalEnergy)/mRExch);
+
+                // Variable Hard Sphere collision part for collision of
+                // molecules
+                scalar cosTheta = 2.0*cloud_.rndGen().scalar01() - 1.0;
+
+                scalar sinTheta = sqrt(1.0 - cosTheta*cosTheta);
+
+                scalar phi = twoPi*cloud_.rndGen().scalar01();
+
+                vector postCollisionRelU =
+                    relVel
+                    *vector
+                        (
+                            cosTheta,
+                            sinTheta*cos(phi),
+                            sinTheta*sin(phi)
+                        );
+
+                vector UP = reactionProperties(cloud_, p, q).Ucm() + (postCollisionRelU*mQExch/(mPExch + mQExch));
+                vector UQ = reactionProperties(cloud_, p, q).Ucm() - (postCollisionRelU*mPExch/(mPExch + mQExch));
+                
+                vector positionP(p.position());
+
+                label cell = -1;
+                label tetFace = -1;
+                label tetPt = -1;
+
+                mesh_.findCellFacePt
+                (
+                    positionP,
+                    cell,
+                    tetFace,
+                    tetPt
+                );
+
+                scalar RWFp = p.RWF();
+                labelList vibLevelMol(1, 0);
+                
+                p.position() = positionP;
+                p.U() = UP;
+                p.RWF() = RWFp;
+                p.ERot() = 0.0;
+                p.ELevel() = 0;
+                p.cell() = cell;
+                p.tetFace() = tetFace;
+                p.tetPt() = tetPt;
+                p.typeId() = typeIdMol;
+                p.newParcel() = 0;
+                p.vibLevel() = vibLevelMol;
+
+                vector positionQ(q.position());
+
+                cell = -1;
+                tetFace = -1;
+                tetPt = -1;
+
+                mesh_.findCellFacePt
+                (
+                    positionQ,
+                    cell,
+                    tetFace,
+                    tetPt
+                );
+
+                scalar RWFq = q.RWF();
+                labelList vibLevelAtom(0, 0);
+                
+                q.position() = positionQ;
+                q.U() = UQ;
+                q.RWF() = RWFq;
+                q.ERot() = 0.0;
+                q.ELevel() = 0;
+                q.cell() = cell;
+                q.tetFace() = tetFace;
+                q.tetPt() = tetPt;
+                q.typeId() = typeIdAtom;
+                q.newParcel() = 0;
+                q.vibLevel() = vibLevelAtom;
+            }
+        }
     }
 }
 
