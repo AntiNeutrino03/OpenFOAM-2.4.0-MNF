@@ -82,8 +82,8 @@ dsmcDynamicLoadBalancing::dsmcDynamicLoadBalancing
     performBalance_(false),
     enableBalancing_(Switch(dsmcLoadBalanceDict_.lookup("enableBalancing"))),
     originalEndTime_(time_.time().endTime().value()),
-    maxImbalance_(readScalar(dsmcLoadBalanceDict_.lookup("maximumAllowableImbalance")))
-//     nProcs_(readLabel(dsmcLoadBalanceDict_.lookup("numberOfSubdomains")))
+    maxImbalance_(readScalar(dsmcLoadBalanceDict_.lookup("maximumAllowableImbalance"))),
+    steadyStateCase_(Switch(dsmcLoadBalanceDict_.lookup("steadyStateCase")))
 {}
 // * * * * * * * * * * * * * * * * Destructor  * * * * * * * * * * * * * * * //
 
@@ -165,13 +165,24 @@ void dsmcDynamicLoadBalancing::perform
             
             //system("redistributeCommand");
             
-            system("reconstructPar -latestTime");
-                     
+            if(steadyStateCase_)
+            {
+                system("reconstructPar -latestTime");
+            }
+            else
+            {
+                system("reconstructPar");
+            }
+            
+
             system("decomposeDSMCLoadBalancePar -force");
             
             performBalance_ = false;
             
-            system("rmTimeDirs"); 
+            if(steadyStateCase_)
+            {
+                system("rmTimeDirs");
+            }
             
             controlDict_.set("endTime",originalEndTime_);
             
@@ -189,6 +200,7 @@ void dsmcDynamicLoadBalancing::updateProperties
 {
     enableBalancing_ = Switch(newDict.lookup("enableBalancing"));
     maxImbalance_ = readScalar(newDict.lookup("maximumAllowableImbalance"));
+    steadyStateCase_ = Switch(newDict.lookup("steadyStateCase"));
 }
 
 // * * * * * * * * * * * * * * * Member Operators  * * * * * * * * * * * * * //
