@@ -233,6 +233,7 @@ void dsmcMeshFill::setInitialConfiguration()
                     (
                         p,
                         U,
+                        p,
                         RWF,
                         ERot,
                         ELevel,

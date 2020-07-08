@@ -222,9 +222,12 @@ void dsmcVelocityDistributionZone::calculateField()
 
                 if(findIndex(typeIds_, p->typeId()) != -1)
                 {
-                    distrX_.add((p->U().x() - UMean_.x()));
-                    distrY_.add((p->U().y() - UMean_.y()));
-                    distrZ_.add((p->U().z() - UMean_.z()));
+//                     distrX_.add((p->U().x() - UMean_.x()));
+//                     distrY_.add((p->U().y() - UMean_.y()));
+//                     distrZ_.add((p->U().z() - UMean_.z()));
+                    distrX_.add((p->U().x()));
+                    distrY_.add((p->U().y()));
+                    distrZ_.add((p->U().z()));
 //                     Info << " adding: "  << mag(p->U() - UMean_) << endl;
                 }
             }

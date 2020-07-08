@@ -260,7 +260,7 @@ void dsmcMassFlowRateInlet::controlParcelsBeforeMove()
                 scalar uNormal;
                 scalar uNormalThermal;
 
-                if(abs(faceVelocity & n) > VSMALL)
+                if(fabs(faceVelocity & n) > VSMALL)
                 {
                     // Select a velocity using Bird eqn 12.5
                     do
@@ -338,6 +338,7 @@ void dsmcMassFlowRateInlet::controlParcelsBeforeMove()
                 (
                     p,
                     U,
+                    p,
                     RWF,
                     ERot,
                     ELevel,
@@ -440,7 +441,7 @@ void dsmcMassFlowRateInlet::controlParcelsAfterCollisions()
         const vector& sF = mesh_.faceAreas()[faces_[c]];
         const scalar fA = mag(sF);
         
-        if((inletVelocity_[c] & -sF/fA) < 0)
+        if((inletVelocity_[c] & -sF/fA) < VSMALL)
         {
             inletVelocity_[c] = previousInletVelocity_[c];
         }

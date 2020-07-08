@@ -146,6 +146,7 @@ inline Foam::dsmcParcel::dsmcParcel
     const polyMesh& mesh,
     const vector& position,
     const vector& U,
+    const vector& initPos,
     const scalar RWF,
     const scalar ERot,
     const label ELevel,
@@ -163,6 +164,7 @@ inline Foam::dsmcParcel::dsmcParcel
 :
     particle(mesh, position, cellI, tetFaceI, tetPtI),
     U_(U),
+    initPos_(initPos),
     RWF_(RWF),
     ERot_(ERot),
     ELevel_(ELevel),
@@ -298,6 +300,11 @@ inline const Foam::vector& Foam::dsmcParcel::U() const
     return U_;
 }
 
+inline const Foam::vector& Foam::dsmcParcel::initPos() const
+{
+    return initPos_;
+}
+
 //template <class ParcelType>
 inline Foam::scalar Foam::dsmcParcel::RWF() const
 {
@@ -355,6 +362,11 @@ inline Foam::label& Foam::dsmcParcel::typeId()
 inline Foam::vector& Foam::dsmcParcel::U()
 {
     return U_;
+}
+
+inline Foam::vector& Foam::dsmcParcel::initPos()
+{
+    return initPos_;
 }
 
 //template <class ParcelType>

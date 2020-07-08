@@ -251,6 +251,7 @@ void dsmcZoneFill::setInitialConfiguration()
                         (
                             p,
                             U,
+                            p,
                             RWF,
                             ERot,
                             ELevel,

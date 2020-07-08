@@ -270,6 +270,7 @@ void dsmcLaserHeatingFill::setInitialConfiguration()
                         (
                             p,
                             U,
+                            p,
                             RWF,
                             ERot,
                             ELevel,

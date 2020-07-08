@@ -347,7 +347,7 @@ void dsmcChapmanEnskogFreeStreamInflowPatch::controlParcelsBeforeMove()
                 
                 do
                 {
-                    if(abs(faceVelocity & n) > VSMALL)
+                    if(fabs(faceVelocity & n) > VSMALL)
                     {
                         // Select a velocity using Bird eqn 12.5
                         do
@@ -448,6 +448,7 @@ void dsmcChapmanEnskogFreeStreamInflowPatch::controlParcelsBeforeMove()
                 (
                     p,
                     U,
+                    p,
                     RWF,
                     ERot,
                     ELevel,
@@ -535,48 +536,50 @@ void dsmcChapmanEnskogFreeStreamInflowPatch::setProperties()
     shearStress_.zy() = shearStressZComponents_.y();
     shearStress_.zz() = shearStressZComponents_.z();
     
-    heatFluxMax_ = abs(heatFlux_.x());
-    if(abs(heatFlux_.y()) > heatFluxMax_)
+    heatFluxMax_ = fabs(heatFlux_.x());
+    
+    if(fabs(heatFlux_.y()) > heatFluxMax_)
     {
-        heatFluxMax_ = abs(heatFlux_.y());
+        heatFluxMax_ = fabs(heatFlux_.y());
     }
-    if(abs(heatFlux_.z()) > heatFluxMax_)
+    if(fabs(heatFlux_.z()) > heatFluxMax_)
     {
-        heatFluxMax_ = abs(heatFlux_.z());
+        heatFluxMax_ = fabs(heatFlux_.z());
     }
     
-    shearStressMax_ = abs(shearStress_.xx());
-    if(abs(shearStress_.xy()) > shearStressMax_)
+    shearStressMax_ = fabs(shearStress_.xx());
+    
+    if(fabs(shearStress_.xy()) > shearStressMax_)
     {
-        shearStressMax_ = abs(shearStress_.xy());
+        shearStressMax_ = fabs(shearStress_.xy());
     }
-    if(abs(shearStress_.xz()) > shearStressMax_)
+    if(fabs(shearStress_.xz()) > shearStressMax_)
     {
-        shearStressMax_ = abs(shearStress_.xz());
+        shearStressMax_ = fabs(shearStress_.xz());
     }
-    if(abs(shearStress_.yx()) > shearStressMax_)
+    if(fabs(shearStress_.yx()) > shearStressMax_)
     {
-        shearStressMax_ = abs(shearStress_.yx());
+        shearStressMax_ = fabs(shearStress_.yx());
     }
-    if(abs(shearStress_.yy()) > shearStressMax_)
+    if(fabs(shearStress_.yy()) > shearStressMax_)
     {
-        shearStressMax_ = abs(shearStress_.yy());
+        shearStressMax_ = fabs(shearStress_.yy());
     }
-    if(abs(shearStress_.yz()) > shearStressMax_)
+    if(fabs(shearStress_.yz()) > shearStressMax_)
     {
-        shearStressMax_ = abs(shearStress_.yz());
+        shearStressMax_ = fabs(shearStress_.yz());
     }
-    if(abs(shearStress_.zx()) > shearStressMax_)
+    if(fabs(shearStress_.zx()) > shearStressMax_)
     {
-        shearStressMax_ = abs(shearStress_.zx());
+        shearStressMax_ = fabs(shearStress_.zx());
     }
-    if(abs(shearStress_.zy()) > shearStressMax_)
+    if(fabs(shearStress_.zy()) > shearStressMax_)
     {
-        shearStressMax_ = abs(shearStress_.zy());
+        shearStressMax_ = fabs(shearStress_.zy());
     }
-    if(abs(shearStress_.zz()) > shearStressMax_)
+    if(fabs(shearStress_.zz()) > shearStressMax_)
     {
-        shearStressMax_ = abs(shearStress_.zz());
+        shearStressMax_ = fabs(shearStress_.zz());
     }
 
     //  read in the type ids

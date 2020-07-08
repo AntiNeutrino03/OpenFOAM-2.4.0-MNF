@@ -56,13 +56,11 @@ dsmcDiffuseWallVelDistPatch::dsmcDiffuseWallVelDistPatch
     propsDict_(dict.subDict(typeName + "Properties")),
     timeDict_(dict.subDict("timeProperties")),
     time_(t, timeDict_),
-    UMean_(vector::zero),
-    Ucollected_(vector::zero),
-    nParcels_(0),
+    typeIds_(),
     binWidth_(readScalar(propsDict_.lookup("binWidth"))), 
-    distrX_(binWidth_),
-    distrY_(binWidth_),
-    distrZ_(binWidth_)
+    distrX_(),
+    distrY_(),
+    distrZ_()
 {
     writeInTimeDir_ = false;
     writeInCase_ = false;
@@ -125,186 +123,147 @@ void dsmcDiffuseWallVelDistPatch::controlParticle(dsmcParcel& p, dsmcParcel::tra
     vector nw = p.faceNormal();
     nw /= mag(nw);
     
-//     if(nw.y() == 1 || nw.y() == -1)
-//     {
-        //Particle hitting lateral face
-        nParcels_++;
-        Ucollected_ += p.U(); 
+    label distSize = typeIds_.size();
         
-        vector Ucollected = Ucollected_;
-        label nParcels = nParcels_;
+    //Individual species
+    distrX_[typeId].add((p.U().x()));
+    distrY_[typeId].add((p.U().y()));
+    distrZ_[typeId].add((p.U().z()));
+    
+    //Mixture
+    distrX_[distSize].add((p.U().x()));
+    distrY_[distSize].add((p.U().y()));
+    distrZ_[distSize].add((p.U().z()));
 
-//         //- sending
-//         if(Pstream::parRun())
-//         {
-//             for (int p = 0; p < Pstream::nProcs(); p++)
-//             {
-//                 if(p != Pstream::myProcNo())
-//                 {
-//                     const int proc = p;
-//                     {
-//                         OPstream toNeighbour(Pstream::blocking, proc);
-//                         toNeighbour << Ucollected << nParcels;
-//                     }
-//                 }
-//             }
-//             
-//             Pout << "1" << endl;
-//         
-//             //- receiving
-//             for (int p = 0; p < Pstream::nProcs(); p++)
-//             {
-//                 if(p != Pstream::myProcNo())
-//                 {
-//                     vector UcollectedProc;
-//                     label nParcelsProc;
-//     
-//                     const int proc = p;
-//                     {
-//                         IPstream fromNeighbour(Pstream::blocking, proc);
-//                         fromNeighbour >> UcollectedProc >> nParcelsProc;
-//                     }
-//     
-//                     Ucollected += UcollectedProc;
-//                     nParcels += nParcelsProc;
-//                 }
-//             }
-//         }
-        
-        if(nParcels_ > 0)
+    if(runTime.outputTime())
+    {
+        fileName timePath(runTime.path()/runTime.timeName()/"uniform");
+    
+        if (!isDir(timePath))
         {
-            UMean_ = Ucollected/nParcels;
+            mkDir(timePath);
+        }
+
+        List< List< Pair<scalar> > > rawDistributionX(typeIds_.size() + 1);
+        List< List< Pair<scalar> > > rawDistributionY(typeIds_.size() + 1);
+        List< List< Pair<scalar> > > rawDistributionZ(typeIds_.size() + 1);
+        
+        forAll(rawDistributionX, i)
+        {
+            rawDistributionX[i] = distrX_[i].raw();
+            rawDistributionY[i] = distrY_[i].raw();
+            rawDistributionZ[i] = distrZ_[i].raw();
+        }
+
+        labelList nSizeX(typeIds_.size() + 1);
+        labelList nSizeY(typeIds_.size() + 1);
+        labelList nSizeZ(typeIds_.size() + 1);
+        
+        forAll(nSizeX, i)
+        {
+            nSizeX[i] = rawDistributionX[i].size();
+            nSizeY[i] = rawDistributionY[i].size();
+            nSizeZ[i] = rawDistributionZ[i].size();
+        }            
+
+        List <scalarField> xAxisX (typeIds_.size() + 1);
+        List <scalarField> yAxisX (typeIds_.size() + 1);
+        List <scalarField> xAxisY (typeIds_.size() + 1);
+        List <scalarField> yAxisY (typeIds_.size() + 1);
+        List <scalarField> xAxisZ (typeIds_.size() + 1);
+        List <scalarField> yAxisZ (typeIds_.size() + 1);
+        
+        forAll(xAxisX, i)
+        {
+            xAxisX[i].setSize(nSizeX[i]);
+            yAxisX[i].setSize(nSizeX[i]);
+            xAxisY[i].setSize(nSizeY[i]);
+            yAxisY[i].setSize(nSizeY[i]);
+            xAxisZ[i].setSize(nSizeZ[i]);
+            yAxisZ[i].setSize(nSizeZ[i]);
         }
         
-        distrX_.add((p.U().x() - UMean_.x()));
-        distrY_.add((p.U().y() - UMean_.y()));
-        distrZ_.add((p.U().z() - UMean_.z()));
 
-        if(runTime.outputTime())
+        forAll(rawDistributionX, i)
         {
-            fileName timePath(runTime.path()/runTime.timeName()/"uniform");
-        
-            if (!isDir(timePath))
+            forAll(rawDistributionX[i], j)
             {
-                mkDir(timePath);
+                xAxisX[i][j] = rawDistributionX[i][j].first();
+                yAxisX[i][j] = rawDistributionX[i][j].second();
             }
-
-            List< Pair<scalar> > rawDistributionX = distrX_.raw();
-            List< Pair<scalar> > rawDistributionY = distrY_.raw();
-            List< Pair<scalar> > rawDistributionZ = distrZ_.raw();
-
-            label nSizeX = rawDistributionX.size();
-            label nSizeY = rawDistributionY.size();
-            label nSizeZ = rawDistributionZ.size();
-            
-//             Pout << "3" << endl;
-
-//             if (Pstream::parRun())
-//             {
-//                 reduce(nSizeX, sumOp<label>());
-//                 reduce(nSizeY, sumOp<label>());
-//                 reduce(nSizeZ, sumOp<label>());
-//             }
-            
-//             Pout << "4" << endl;
-
-            scalarField xAxisX (nSizeX, 0.0);
-            scalarField yAxisX (nSizeX, 0.0);
-            scalarField xAxisY (nSizeY, 0.0);
-            scalarField yAxisY (nSizeY, 0.0);
-            scalarField xAxisZ (nSizeZ, 0.0);
-            scalarField yAxisZ (nSizeZ, 0.0);
-            
-
-            forAll(rawDistributionX, i)
-            {
-                xAxisX[i] = rawDistributionX[i].first();
-                yAxisX[i] = rawDistributionX[i].second();
-            }
-            
-            forAll(rawDistributionY, i)
-            {
-                xAxisY[i] = rawDistributionY[i].first();
-                yAxisY[i] = rawDistributionY[i].second();
-            }
-            
-            forAll(rawDistributionZ, i)
-            {
-                xAxisZ[i] = rawDistributionZ[i].first();
-                yAxisZ[i] = rawDistributionZ[i].second();
-            }
-
-//             //- sending
-//             if (Pstream::parRun())
-//             {
-//                 for (int p = 0; p < Pstream::nProcs(); p++)
-//                 {
-//                     if(p != Pstream::myProcNo())
-//                     {
-//                         const int proc = p;
-//                         {
-//                             OPstream toNeighbour(Pstream::blocking, proc);
-//                             toNeighbour << xAxisX << yAxisX << xAxisY 
-//                                         << yAxisY << xAxisZ << yAxisZ;
-//                         }
-//                     }
-//                 }
-//             
-//                 //- receiving
-//                 for (int p = 0; p < Pstream::nProcs(); p++)
-//                 {
-//                     if(p != Pstream::myProcNo())
-//                     {
-//                         scalarField xAxisXProc;
-//                         scalarField yAxisXProc;
-//                         scalarField xAxisYProc;
-//                         scalarField yAxisYProc;
-//                         scalarField xAxisZProc;
-//                         scalarField yAxisZProc;
-//         
-//                         const int proc = p;
-//                         {
-//                             IPstream fromNeighbour(Pstream::blocking, proc);
-//                             fromNeighbour >> xAxisXProc >> yAxisXProc >> xAxisYProc 
-//                                         >> yAxisYProc >> xAxisZProc >> yAxisZProc;
-//                         }
-//         
-//                         forAll(xAxisXProc, i)
-//                         {
-//                             xAxisX[i] += xAxisXProc[i];
-//                             yAxisX[i] += yAxisXProc[i];
-//                         }
-//                         
-//                         forAll(xAxisYProc, i)
-//                         {
-//                             xAxisY[i] += xAxisYProc[i];
-//                             yAxisY[i] += yAxisYProc[i];
-//                         }
-//                         
-//                         forAll(xAxisZProc, i)
-//                         {
-//                             xAxisZ[i] += xAxisZProc[i];
-//                             yAxisZ[i] += yAxisZProc[i];
-//                         }
-//                     }
-//                 }
-//             }
-            
-            word binsX = "velocityBinsX";
-            word binsY = "velocityBinsY";
-            word binsZ = "velocityBinsZ";
-            word X = "velocityDistributionX";
-            word Y = "velocityDistributionY";
-            word Z = "velocityDistributionZ";
-
-            writeTimeData(timePath, binsX, xAxisX);
-            writeTimeData(timePath, binsY, xAxisY);
-            writeTimeData(timePath, binsZ, xAxisZ);
-            writeTimeData(timePath, X, yAxisX);
-            writeTimeData(timePath, Y, yAxisY);
-            writeTimeData(timePath, Z, yAxisZ);
         }
-//     }
+        
+        forAll(rawDistributionY, i)
+        {
+            forAll(rawDistributionY[i], j)
+            {
+                xAxisY[i][j] = rawDistributionY[i][j].first();
+                yAxisY[i][j] = rawDistributionY[i][j].second();
+            }
+        }
+        
+        forAll(rawDistributionZ, i)
+        {
+            forAll(rawDistributionZ[i], j)
+            {
+                xAxisZ[i][j] = rawDistributionZ[i][j].first();
+                yAxisZ[i][j] = rawDistributionZ[i][j].second();
+            }
+        }
+
+        
+        wordList binsX(typeIds_.size() + 1);
+        wordList binsY(typeIds_.size() + 1);
+        wordList binsZ(typeIds_.size() + 1);
+        wordList X(typeIds_.size() + 1);
+        wordList Y(typeIds_.size() + 1);
+        wordList Z(typeIds_.size() + 1);
+        
+        const List<word> molecules (propsDict_.lookup("typeIds"));
+
+        DynamicList<word> moleculesReduced(0);
+
+        forAll(molecules, i)
+        {
+            const word moleculeName(molecules[i]);
+
+            if(findIndex(moleculesReduced, moleculeName) == -1)
+            {
+                moleculesReduced.append(moleculeName);
+            }
+        }
+
+        moleculesReduced.shrink();
+        
+        for(label i = 0; i < typeIds_.size(); i++)
+        {
+            binsX[i] = "velocityBinsX_"+moleculesReduced[i];
+            binsY[i] = "velocityBinsY_"+moleculesReduced[i];
+            binsZ[i] = "velocityBinsZ_"+moleculesReduced[i];
+            X[i] = "velocityDistributionX_"+moleculesReduced[i];
+            Y[i] = "velocityDistributionY_"+moleculesReduced[i];
+            Z[i] = "velocityDistributionZ_"+moleculesReduced[i];
+        }
+        
+        binsX[typeIds_.size()] = "velocityBinsX_mixture";
+        binsY[typeIds_.size()] = "velocityBinsY_mixture";
+        binsZ[typeIds_.size()] = "velocityBinsZ_mixture";
+        X[typeIds_.size()] = "velocityDistributionX_mixture";
+        Y[typeIds_.size()] = "velocityDistributionY_mixture";
+        Z[typeIds_.size()] = "velocityDistributionZ_mixture";
+
+        forAll(binsX, i)
+        {
+            writeTimeData(timePath, binsX[i], xAxisX[i]);
+            writeTimeData(timePath, binsY[i], xAxisY[i]);
+            writeTimeData(timePath, binsZ[i], xAxisZ[i]);
+            writeTimeData(timePath, X[i], yAxisX[i]);
+            writeTimeData(timePath, Y[i], yAxisY[i]);
+            writeTimeData(timePath, Z[i], yAxisZ[i]);
+        }
+
+    }
+
 
     // Normal velocity magnitude
     scalar U_dot_nw = U & nw;
@@ -394,6 +353,74 @@ void dsmcDiffuseWallVelDistPatch::setProperties()
 {
     velocity_ = propsDict_.lookup("velocity");
     temperature_ = readScalar(propsDict_.lookup("temperature"));
+    
+    //  read in the type ids
+
+    const List<word> molecules (propsDict_.lookup("typeIds"));
+
+    if(molecules.size() == 0)
+    {
+        FatalErrorIn("dsmcFreeStreamInflowPatch::dsmcFreeStreamInflowPatch()")
+            << "Cannot have zero typeIds being inserd." << nl << "in: "
+            << mesh_.time().system()/"boundariesDict"
+            << exit(FatalError);
+    }
+
+    DynamicList<word> moleculesReduced(0);
+
+    forAll(molecules, i)
+    {
+        const word moleculeName(molecules[i]);
+
+        if(findIndex(moleculesReduced, moleculeName) == -1)
+        {
+            moleculesReduced.append(moleculeName);
+        }
+    }
+
+    moleculesReduced.shrink();
+
+    //  set the type ids
+
+    typeIds_.setSize(moleculesReduced.size(), -1);
+
+    forAll(moleculesReduced, i)
+    {
+        const word moleculeName(moleculesReduced[i]);
+
+        label typeId(findIndex(cloud_.typeIdList(), moleculeName));
+
+        if(typeId == -1)
+        {
+            FatalErrorIn("dsmcDiffuseWallVelDistPatch::dsmcDiffuseWallVelDistPatch()")
+                << "Cannot find typeId: " << moleculeName << nl << "in: "
+                << mesh_.time().system()/"boundariesDict"
+                << exit(FatalError);
+        }
+
+        typeIds_[i] = typeId;
+    }
+    
+    distrX_.setSize(typeIds_.size() + 1);
+    
+    forAll(distrX_, i)
+    {
+        distrX_[i](binWidth_);
+    }
+    
+    distrY_.setSize(typeIds_.size() + 1);
+    
+    forAll(distrY_, i)
+    {
+        distrY_[i](binWidth_);
+    }
+    
+    distrZ_.setSize(typeIds_.size() + 1);
+    
+    forAll(distrZ_, i)
+    {
+        distrZ_[i](binWidth_);
+    }
 }
 
 } // End namespace Foam

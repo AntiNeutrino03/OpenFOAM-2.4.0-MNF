@@ -262,6 +262,7 @@ void dsmcGaussianPulseFill::setInitialConfiguration()
                         (
                             p,
                             U,
+                            p,
                             RWF,
                             ERot,
                             ELevel,

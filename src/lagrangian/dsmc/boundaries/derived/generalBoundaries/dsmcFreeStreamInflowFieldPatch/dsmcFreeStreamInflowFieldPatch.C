@@ -415,6 +415,7 @@ void dsmcFreeStreamInflowFieldPatch::controlParcelsBeforeMove()
                 (
                     p,
                     U,
+                    p,
                     RWF,
                     ERot,
                     ELevel,

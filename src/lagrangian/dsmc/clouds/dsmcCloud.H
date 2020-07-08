@@ -104,6 +104,13 @@ private:
         //- Movements dealt with differently if true
         bool axisymmetric_;
         
+        //- Bool to identify is simulation to use a fixed Zv
+        //- Collision temperature used if false
+        bool constantZv_;
+        
+        //- Vibrational relaxation collision number
+        scalar vibrationalRelaxationCollisionNumber_;
+        
         //- Radial extent of the domain, needed for axisymmetric
         //- simulations
         scalar radialExtent_;
@@ -538,6 +545,8 @@ public:
             void reBuildCellOccupancy();
             
             void axisymmetricWeighting();
+            
+            void updateInitPos();
 
 
         // Cloud evolution functions
@@ -547,6 +556,7 @@ public:
             (
                 const vector& position,
                 const vector& U,
+                const vector& initPos,
                 const scalar RWF,
                 const scalar ERot,
                 const label ELevel,

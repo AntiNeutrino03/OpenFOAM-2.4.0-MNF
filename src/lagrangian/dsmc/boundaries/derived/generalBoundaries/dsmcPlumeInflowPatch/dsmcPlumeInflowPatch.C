@@ -355,6 +355,7 @@ void dsmcPlumeInflowPatch::controlParcelsBeforeMove()
                 (
                     p,
                     U,
+                    p,
                     1.0,
                     ERot,
                     ELevel,

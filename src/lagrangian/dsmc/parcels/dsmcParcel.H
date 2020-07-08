@@ -228,6 +228,9 @@ private:
             //- Velocity of Parcel [m/s]
             vector U_;
             
+            //- Initial position of parcel each time step
+            vector initPos_;
+            
             //- Radial weight of parcel (for axisymmetric)
             scalar RWF_;
 
@@ -277,6 +280,7 @@ public:
             const polyMesh& mesh,
             const vector& position,
             const vector& U,
+            const vector& initPos,
             const scalar RWF,
             const scalar ERot,
             const label ELevel,
@@ -345,6 +349,9 @@ public:
             //- Return const access to velocity
             inline const vector& U() const;
             
+            //- Return const access to intialPosition
+            inline const vector& initPos() const;
+            
             //- Return const access to radial weight
             inline scalar RWF() const;
 
@@ -384,6 +391,9 @@ public:
 
             //- Return access to velocity
             inline vector& U();
+            
+            //- Return access to initial position
+            inline vector& initPos();
             
             //- Return non-const access to radial weight
             inline scalar& RWF();

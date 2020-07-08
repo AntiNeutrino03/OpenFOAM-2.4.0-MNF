@@ -570,6 +570,7 @@ void dsmcReaction::reactionProperties::dissociateP
     (
         position,
         UP2,
+        position,
         RWF,
         0.0,
         0,
@@ -754,6 +755,7 @@ void dsmcReaction::reactionProperties::dissociateQ
     (
         position,
         uQ2,
+        position,
         RWF,
         0.0,
         0,
@@ -944,6 +946,7 @@ void dsmcReaction::reactionProperties::ioniseP
     (
         position,
         uP2,
+        position,
         RWF,
         0.0,
         0,
@@ -1136,6 +1139,7 @@ void dsmcReaction::reactionProperties::ioniseQ
     (
         position,
         uQ2,
+        position,
         RWF,
         0.0,
         0,

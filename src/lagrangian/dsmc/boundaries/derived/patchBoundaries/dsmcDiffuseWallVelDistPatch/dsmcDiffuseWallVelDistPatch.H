@@ -73,14 +73,12 @@ private:
         dictionary timeDict_;
         timeDataMeas time_;
         
-        vector UMean_;
-        vector Ucollected_;
-        label nParcels_;
+        labelList typeIds_;
 
         scalar binWidth_;
-        distribution distrX_;
-        distribution distrY_;
-        distribution distrZ_;
+        List <distribution> distrX_;
+        List <distribution> distrY_;
+        List <distribution> distrZ_;
         
         void setProperties();
 

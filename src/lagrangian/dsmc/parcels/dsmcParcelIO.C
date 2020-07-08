@@ -40,6 +40,7 @@ Foam::dsmcParcel::dsmcParcel
 :
     particle(mesh, is, readFields),
     U_(vector::zero),
+    initPos_(vector::zero),
     RWF_(1.0),
     ERot_(0.0),
     ELevel_(0),
@@ -56,6 +57,7 @@ Foam::dsmcParcel::dsmcParcel
         if (is.format() == IOstream::ASCII)
         {
             is >> U_;
+            is >> initPos_;
             RWF_ = readScalar(is);
             ERot_ = readScalar(is);
             ELevel_ = readLabel(is);
@@ -73,6 +75,7 @@ Foam::dsmcParcel::dsmcParcel
             (
                 reinterpret_cast<char*>(&U_),
                 sizeof(U_)
+                + sizeof(initPos_)
                 + sizeof(RWF_)
                 + sizeof(ERot_)
                 + sizeof(ELevel_)
@@ -108,6 +111,9 @@ void Foam::dsmcParcel::readFields(Cloud<dsmcParcel>& c)
 
     IOField<vector> U(c.fieldIOobject("U", IOobject::MUST_READ));
     c.checkFieldIOobject(c, U);
+    
+    IOField<vector> initPos(c.fieldIOobject("initPos", IOobject::MUST_READ));
+    c.checkFieldIOobject(c, initPos);
     
     IOField<scalar> RWF(c.fieldIOobject("radialWeight", IOobject::MUST_READ));
     c.checkFieldIOobject(c, RWF);
@@ -145,6 +151,7 @@ void Foam::dsmcParcel::readFields(Cloud<dsmcParcel>& c)
         dsmcParcel& p = iter();
 
         p.U_ = U[i];
+        p.initPos_ = initPos[i];
         p.RWF_ = RWF[i];
         p.ERot_ = ERot[i];
         p.ELevel_ = ELevel[i];
@@ -168,6 +175,7 @@ void Foam::dsmcParcel::writeFields(const Cloud<dsmcParcel>& c)
     label np =  c.size();
 
     IOField<vector> U(c.fieldIOobject("U", IOobject::NO_READ), np);
+    IOField<vector> initPos(c.fieldIOobject("initPos", IOobject::NO_READ), np);
     IOField<scalar> RWF(c.fieldIOobject("radialWeight", IOobject::NO_READ), np);
     IOField<scalar> ERot(c.fieldIOobject("ERot", IOobject::NO_READ), np);
     IOField<label> ELevel(c.fieldIOobject("ELevel", IOobject::NO_READ), np);
@@ -185,6 +193,7 @@ void Foam::dsmcParcel::writeFields(const Cloud<dsmcParcel>& c)
         const dsmcParcel& p = iter();
 
         U[i] = p.U();
+        initPos[i] = p.initPos();
         RWF[i] = p.RWF();
         ERot[i] = p.ERot();
         ELevel[i] = p.ELevel();
@@ -199,6 +208,7 @@ void Foam::dsmcParcel::writeFields(const Cloud<dsmcParcel>& c)
     }
 
     U.write();
+    initPos.write();
     RWF.write();
     ERot.write();
     vibLevel.write();
@@ -227,6 +237,7 @@ Foam::Ostream& Foam::operator<<
     {
         os  << static_cast<const particle&>(p) 
             << token::SPACE << p.U()
+            << token::SPACE << p.initPos()
             << token::SPACE << p.RWF()
             << token::SPACE << p.ERot()
             << token::SPACE << p.ELevel()
@@ -245,6 +256,7 @@ Foam::Ostream& Foam::operator<<
         (
             reinterpret_cast<const char*>(&p.U_),
             sizeof(p.U())
+            + sizeof(p.initPos())
             + sizeof(p.RWF())
             + sizeof(p.ERot())
             + sizeof(p.ELevel())

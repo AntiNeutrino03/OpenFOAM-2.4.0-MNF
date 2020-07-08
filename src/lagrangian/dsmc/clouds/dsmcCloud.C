@@ -223,6 +223,7 @@ void Foam::dsmcCloud::addElectrons()
                 (
                     position,
                     electronVelocity,
+                    position,
                     RWF,
                     0.0,
                     0,
@@ -475,6 +476,7 @@ void Foam::dsmcCloud::addNewParcel
 (
     const vector& position,
     const vector& U,
+    const vector& initPos,
     const scalar RWF,
     const scalar ERot,
     const label ELevel,
@@ -495,6 +497,7 @@ void Foam::dsmcCloud::addNewParcel
         mesh_,
         position,
         U,
+        position,
         RWF,
         ERot,
         ELevel,
@@ -644,6 +647,8 @@ Foam::dsmcCloud::dsmcCloud
     typeIdList_(particleProperties_.lookup("typeIdList")),
     nParticle_(readScalar(particleProperties_.lookup("nEquivalentParticles"))),
     axisymmetric_(Switch(particleProperties_.lookup("axisymmetricSimulation"))),
+    constantZv_(Switch(particleProperties_.lookup("constantZv"))),
+    vibrationalRelaxationCollisionNumber_(50.0),
     radialExtent_(0.0),
     maxRWF_(1.0),
     chemReact_(Switch(particleProperties_.lookup("chemicalReactions"))),
@@ -707,6 +712,11 @@ Foam::dsmcCloud::dsmcCloud
         maxRWF_ = 
             readScalar(particleProperties_.lookup("maxRadialWeightingFactor"));
         maxRWF_ -= 1.0;
+    }
+    
+    if(constantZv_)
+    {
+        vibrationalRelaxationCollisionNumber_ =                 readScalar(particleProperties_.lookup("vibrationalRelaxationCollisionNumber"));
     }
 
 //     forAll(mesh_.cells(), c)
@@ -909,6 +919,8 @@ void Foam::dsmcCloud::evolve()
     {
         releaseParticlesFromWall();
     }
+    
+    updateInitPos();
     
     // Move the particles ballistically with their current velocities
     Cloud<dsmcParcel>::move(td, mesh_.time().deltaTValue());
@@ -1335,30 +1347,39 @@ Foam::label Foam::dsmcCloud::postCollisionVibrationalEnergyLevel
     }
     else
     {
-        // - "quantised collision temperature" (equation 3, Bird 2010), 
-        // denominator from Bird 5.42
+        scalar inverseVibrationalCollisionNumber = 1.0;
+        
+        if(constantZv_)
+        {
+            inverseVibrationalCollisionNumber = 1.0/vibrationalRelaxationCollisionNumber_;
+        }
+        else
+        {
+            // - "quantised collision temperature" (equation 3, Bird 2010), 
+            // denominator from Bird 5.42
 
-        scalar TColl = (iMax*thetaV) / (3.5 - omega);
-        
-        scalar pow1 = pow((thetaD/TColl),0.33333) - 1.0;
+            scalar TColl = (iMax*thetaV) / (3.5 - omega);
+            
+            scalar pow1 = pow((thetaD/TColl),0.33333) - 1.0;
 
-        scalar pow2 = pow ((thetaD/refTempZv),0.33333) -1.0;
+            scalar pow2 = pow ((thetaD/refTempZv),0.33333) -1.0;
 
-        // - vibrational collision number (equation 2, Bird 2010)
-        scalar ZvP1 = pow((thetaD/TColl),omega); 
+            // - vibrational collision number (equation 2, Bird 2010)
+            scalar ZvP1 = pow((thetaD/TColl),omega); 
+            
+            scalar ZvP2 = 
+                    pow(Zref*(pow((thetaD/refTempZv),(-1.0*omega))),(pow1/pow2));
+            
+            scalar Zv = ZvP1*ZvP2;
+            
+            //In order to obtain the relaxation rate corresponding to Zv with the
+            // collision energy-based procedure, the inelastic fraction should be 
+            // set to about 1/(5Zv) Bird 2008 RGD "A Comparison of Collison 
+            // Energy-Based and Temperature-Based..."
+            
+            inverseVibrationalCollisionNumber = 1.0/(5.0*Zv);
+        }
         
-        scalar ZvP2 = 
-                pow(Zref*(pow((thetaD/refTempZv),(-1.0*omega))),(pow1/pow2));
-        
-        scalar Zv = ZvP1*ZvP2;
-        
-        //In order to obtain the relaxation rate corresponding to Zv with the
-        // collision energy-based procedure, the inelastic fraction should be 
-        // set to about 1/(5Zv) Bird 2008 RGD "A Comparison of Collison 
-        // Energy-Based and Temperature-Based..."
-        
-        scalar inverseVibrationalCollisionNumber = 1.0/(5.0*Zv);
-
         if(inverseVibrationalCollisionNumber > rndGen_.scalar01())
         {
             // post-collision quantum number
@@ -1526,6 +1547,7 @@ void Foam::dsmcCloud::axisymmetricWeighting()
                     (
                         position,
                         p->U(),
+                        position,
                         p->RWF(),
                         p->ERot(),
                         p->ELevel(),
@@ -1568,6 +1590,7 @@ void Foam::dsmcCloud::axisymmetricWeighting()
                     (
                         position,
                         p->U(),
+                        position,
                         p->RWF(),
                         p->ERot(),
                         p->ELevel(),
@@ -1595,6 +1618,21 @@ void Foam::dsmcCloud::axisymmetricWeighting()
             } 
         }
     }
+}
+
+void Foam::dsmcCloud::updateInitPos()
+{
+    forAll(cellOccupancy_, c)
+    {
+        const DynamicList<dsmcParcel*>& molsInCell = cellOccupancy_[c];
+
+        forAll(molsInCell, mIC)
+        {
+            dsmcParcel* p = molsInCell[mIC];
+                       
+            p->initPos() = p->position();
+        }
+    }    
 }
 
 void Foam::dsmcCloud::insertParcelInCellOccupancy(dsmcParcel* p)
