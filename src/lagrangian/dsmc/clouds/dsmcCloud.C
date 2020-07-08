@@ -647,7 +647,6 @@ Foam::dsmcCloud::dsmcCloud
     typeIdList_(particleProperties_.lookup("typeIdList")),
     nParticle_(readScalar(particleProperties_.lookup("nEquivalentParticles"))),
     axisymmetric_(Switch(particleProperties_.lookup("axisymmetricSimulation"))),
-    constantZv_(Switch(particleProperties_.lookup("constantZv"))),
     vibrationalRelaxationCollisionNumber_(50.0),
     radialExtent_(0.0),
     maxRWF_(1.0),
@@ -712,11 +711,6 @@ Foam::dsmcCloud::dsmcCloud
         maxRWF_ = 
             readScalar(particleProperties_.lookup("maxRadialWeightingFactor"));
         maxRWF_ -= 1.0;
-    }
-    
-    if(constantZv_)
-    {
-        vibrationalRelaxationCollisionNumber_ =                 readScalar(particleProperties_.lookup("vibrationalRelaxationCollisionNumber"));
     }
 
 //     forAll(mesh_.cells(), c)
@@ -1349,36 +1343,29 @@ Foam::label Foam::dsmcCloud::postCollisionVibrationalEnergyLevel
     {
         scalar inverseVibrationalCollisionNumber = 1.0;
         
-        if(constantZv_)
-        {
-            inverseVibrationalCollisionNumber = 1.0/vibrationalRelaxationCollisionNumber_;
-        }
-        else
-        {
-            // - "quantised collision temperature" (equation 3, Bird 2010), 
-            // denominator from Bird 5.42
+        // - "quantised collision temperature" (equation 3, Bird 2010), 
+        // denominator from Bird 5.42
 
-            scalar TColl = (iMax*thetaV) / (3.5 - omega);
-            
-            scalar pow1 = pow((thetaD/TColl),0.33333) - 1.0;
+        scalar TColl = (iMax*thetaV) / (3.5 - omega);
+        
+        scalar pow1 = pow((thetaD/TColl),0.33333) - 1.0;
 
-            scalar pow2 = pow ((thetaD/refTempZv),0.33333) -1.0;
+        scalar pow2 = pow ((thetaD/refTempZv),0.33333) -1.0;
 
-            // - vibrational collision number (equation 2, Bird 2010)
-            scalar ZvP1 = pow((thetaD/TColl),omega); 
-            
-            scalar ZvP2 = 
-                    pow(Zref*(pow((thetaD/refTempZv),(-1.0*omega))),(pow1/pow2));
-            
-            scalar Zv = ZvP1*ZvP2;
-            
-            //In order to obtain the relaxation rate corresponding to Zv with the
-            // collision energy-based procedure, the inelastic fraction should be 
-            // set to about 1/(5Zv) Bird 2008 RGD "A Comparison of Collison 
-            // Energy-Based and Temperature-Based..."
-            
-            inverseVibrationalCollisionNumber = 1.0/(5.0*Zv);
-        }
+        // - vibrational collision number (equation 2, Bird 2010)
+        scalar ZvP1 = pow((thetaD/TColl),omega); 
+        
+        scalar ZvP2 = 
+                pow(Zref*(pow((thetaD/refTempZv),(-1.0*omega))),(pow1/pow2));
+        
+        scalar Zv = ZvP1*ZvP2;
+        
+        //In order to obtain the relaxation rate corresponding to Zv with the
+        // collision energy-based procedure, the inelastic fraction should be 
+        // set to about 1/(5Zv) Bird 2008 RGD "A Comparison of Collison 
+        // Energy-Based and Temperature-Based..."
+        
+        inverseVibrationalCollisionNumber = 1.0/(5.0*Zv);
         
         if(inverseVibrationalCollisionNumber > rndGen_.scalar01())
         {

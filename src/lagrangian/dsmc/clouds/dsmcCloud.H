@@ -104,10 +104,6 @@ private:
         //- Movements dealt with differently if true
         bool axisymmetric_;
         
-        //- Bool to identify is simulation to use a fixed Zv
-        //- Collision temperature used if false
-        bool constantZv_;
-        
         //- Vibrational relaxation collision number
         scalar vibrationalRelaxationCollisionNumber_;
         

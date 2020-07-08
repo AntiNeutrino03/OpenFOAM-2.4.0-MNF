@@ -139,6 +139,7 @@ void majorantCollisionFrequency::collide()
 
             // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+            //while loop that is exited by the break statement on line 184
             while(1 < 2)
             {
 
@@ -200,7 +201,7 @@ void majorantCollisionFrequency::collide()
                 if (nSC > 1)
 				{
                     // If there are two or more particle in a subCell, choose
-                    // another from the same cell.  If the same candidate is
+                    // another from the same subcell.  If the same candidate is
                     // chosen, choose again.
 
                     do
