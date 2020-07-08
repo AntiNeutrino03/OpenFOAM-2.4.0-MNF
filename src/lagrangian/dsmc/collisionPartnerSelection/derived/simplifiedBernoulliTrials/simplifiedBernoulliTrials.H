@@ -23,11 +23,14 @@ License
     Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
 
 Class
- 
+    simplifiedBernoulliTrials
 
 Description
 
-    no-time counter with reactions
+Stefan Stefanov's simplified Bernoulli trials collision partner selection routine.
+Leads to fewer repeat collisions than Bird's no time counter method.
+See SIAM J. Sci. Comput. 33(2) 667-702 for details.
+We do not use the half timestep implementation.
 
 SourceFiles
     simplifiedBernoulliTrialsI.H

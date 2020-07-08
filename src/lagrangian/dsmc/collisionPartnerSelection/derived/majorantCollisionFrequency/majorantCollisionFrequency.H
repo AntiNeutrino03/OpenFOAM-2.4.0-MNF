@@ -23,11 +23,12 @@ License
     Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
 
 Class
- 
+    majorantCollisionFrequency
 
 Description
 
-    no-time counter with reactions
+The majorant collision frequency method. 
+See https://aip.scitation.org/doi/10.1063/1.5119580 for details.
 
 SourceFiles
     majorantCollisionFrequencyI.H

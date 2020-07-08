@@ -23,11 +23,12 @@ License
     Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
 
 Class
- 
+    generalisedBernoulliTrials
 
 Description
 
-    no-time counter with reactions
+The generalised Bernoulli trials collision partner selection routine.
+https://doi.org/10.1016/j.jcp.2017.10.033 for details.
 
 SourceFiles
     generalisedBernoulliTrialsI.H
