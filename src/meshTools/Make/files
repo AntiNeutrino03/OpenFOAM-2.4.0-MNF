@@ -101,6 +101,7 @@ $(cellSources)/cellToCell/cellToCell.C
 $(cellSources)/nearestToCell/nearestToCell.C
 $(cellSources)/nbrToCell/nbrToCell.C
 $(cellSources)/zoneToCell/zoneToCell.C
+$(cellSources)/radialStripToCell/radialStripToCell.C
 $(cellSources)/sphereToCell/sphereToCell.C
 $(cellSources)/cylinderToCell/cylinderToCell.C
 $(cellSources)/faceZoneToCell/faceZoneToCell.C

@@ -47,6 +47,7 @@ $(generalConstraints)/explicitSetValue/explicitSetValue.C
 
 derivedConstraints=constraints/derived
 $(derivedConstraints)/fixedTemperatureConstraint/fixedTemperatureConstraint.C
+$(derivedConstraints)/nsdbdTemperatureConstraint/nsdbdTemperatureConstraint.C
 $(derivedConstraints)/temperatureLimitsConstraint/temperatureLimitsConstraint.C
 
 
