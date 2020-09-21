@@ -1,0 +1,47 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  2.4.0                                 |
+|   \\  /    A nd           | Web:      www.OpenFOAM.org                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    location    "system";
+    object      fvOptions;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+nsdbdTemperature
+{
+    type            nsdbdTemperatureConstraint;
+    active          true;
+    
+    nsdbdTemperatureConstraintCoeffs
+    {
+        selectionMode       cellSet;
+        cellSet             set1;
+        ambientTemperature  288.15;
+        pulseTime           100e-9;
+        restTime            0.0099999;//every 0.01 seconds i.e. 100Hz
+        actuatorLength      0.006;
+        actuatorStartPoint  0.230;
+        chi                 0.7;
+    }
+    nsdbdTemperatureConstraintCoeffs
+    {
+        selectionMode       cellSet;
+        cellSet             set2;
+        ambientTemperature  293;
+        pulseTime           100e-9;
+        restTime            4e-3;
+        actuatorLength      0.005;
+        actuatorStartPoint  0.025;
+        chi                 0.5;
+    }
+}
+
+// ************************************************************************* //

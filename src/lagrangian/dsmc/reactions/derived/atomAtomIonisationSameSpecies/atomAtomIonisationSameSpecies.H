@@ -8,10 +8,10 @@
 License
     This file is part of OpenFOAM.
 
-    OpenFOAM is free software; you can redistribute it and/or modify it
-    under the terms of the GNU General Public License as published by the
-    Free Software Foundation; either version 2 of the License, or (at your
-    option) any later version.
+    OpenFOAM is free software: you can redistribute it and/or modify it
+    under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
 
     OpenFOAM is distributed in the hope that it will be useful, but WITHOUT
     ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
@@ -19,8 +19,7 @@ License
     for more details.
 
     You should have received a copy of the GNU General Public License
-    along with OpenFOAM; if not, write to the Free Software Foundation,
-    Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
+    along with OpenFOAM.  If not, see <http://www.gnu.org/licenses/>.
 
 Class
     atomAtomIonisationSameSpecies
@@ -48,41 +47,21 @@ SourceFiles
 
 namespace Foam
 {
-
 /*---------------------------------------------------------------------------*\
-                           Class atomAtomIonisationSameSpecies Declaration
+                Class atomAtomIonisationSameSpecies Declaration
 \*---------------------------------------------------------------------------*/
 
 class atomAtomIonisationSameSpecies
 :
    public dsmcReaction
 {
-
 private:
     // Private data
 
-        //- subDictionary containing the properties
-        dictionary propsDict_;
-
-        List<label> reactantIds_;
-
         List<label> productIdsIon_;
-        
-        word reactionName_;
-
         scalar heatOfReactionIon_;
-       
         label nTotIonisationReactions_;
-        
         label nIonisationReactionsPerTimeStep_;
-
-        bool relax_;
-
-        // remove if not used for heat bath
-        bool allowSplitting_;
-        bool writeRatesToTerminal_;
-        scalar volume_;
-        List<scalar> numberDensities_;
 
 
     // Private Member Functions
@@ -104,10 +83,10 @@ public:
             dsmcCloud& cloud,
             const dictionary& dict
         );
-    
+
         // Destructor
         ~atomAtomIonisationSameSpecies();
-    
+
     // Member Functions
 
         // initial configuration - read in properties from chemReactDict
@@ -120,7 +99,7 @@ public:
             dsmcParcel& q,
             const DynamicList<label>& candidateList,
             const List<DynamicList<label> >& candidateSubList,
-            const label& candidateP,
+            const label candidateP,
             const List<label>& whichSubCell
         );
 
@@ -131,16 +110,15 @@ public:
         );
 
         // return bool if molecules belong to this reaction model
-        bool tryReactMolecules(const label& typeIdP, const label& typeIdQ);
+        bool tryReactMolecules(label typeIdP, const label typeIdQ);
 
         // Access
 
         // return bool for relax = true (run normal collision model)
         // relax = false (apply reaction to molecules)
-        const bool& relax() const;
+        bool relax() const;
 
-        void outputResults(const label& counterIndex);
-
+        void outputResults(const label counterIndex);
 };
 
 

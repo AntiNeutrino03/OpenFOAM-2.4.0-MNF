@@ -59,8 +59,8 @@ dsmcDiffuseCatalyticWallPatch::dsmcDiffuseCatalyticWallPatch
     dsmcPatchBoundary(t, mesh, cloud, dict),
     propsDict_(dict.subDict(typeName + "Properties")),
     catalysisTypeIds_(),
-    catalysedTypeIds_(),
-    heatOfReaction_()
+    catalysedTypeIds_()
+//     heatOfReaction_()
 {
     writeInTimeDir_ = false;
     writeInCase_ = false;
@@ -251,8 +251,10 @@ void dsmcDiffuseCatalyticWallPatch::controlParticle
         
         ELevel = cloud_.equipartitionElectronicLevel
                     (T, degeneracyList, electronicEnergyList, newTypeId);
+                    
+        scalar heatOfReaction = cloud_.constProps(typeId).ionisationTemperature();
 
-        measurePropertiesAfterControl(p, heatOfReaction_[iD]);
+        measurePropertiesAfterControl(p, heatOfReaction);
     }
 }
 
@@ -376,34 +378,34 @@ void dsmcDiffuseCatalyticWallPatch::setProperties()
         catalysedTypeIds_[i] = typeId;
     }
     
-    const dictionary& heatOfReactionDict
-    (
-        propsDict_.subDict("heatOfReaction")
-    );
-    
-    heatOfReaction_.clear();
-    
-    heatOfReaction_.setSize(catalysisTypeIds_.size(), 0.0);
-    
-    if(heatOfReaction_.size() == inputMolecules.size())
-    {
-        // set the heat of reactions
-       
-        forAll(heatOfReaction_, i)
-        {
-            heatOfReaction_[i] = readScalar
-            (
-                heatOfReactionDict.lookup(inputMoleculesReduced[i])
-            );
-        }
-    }
-    else
-    {
-        FatalErrorIn("dsmcDiffuseCatalyticWallPatch::setProperties()")
-                << "heatOfReaction list must be same size as "
-                << "moleculesToBeCatalysed." << nl 
-                << exit(FatalError);
-    }
+//     const dictionary& heatOfReactionDict
+//     (
+//         propsDict_.subDict("heatOfReaction")
+//     );
+//     
+//     heatOfReaction_.clear();
+//     
+//     heatOfReaction_.setSize(catalysisTypeIds_.size(), 0.0);
+//     
+//     if(heatOfReaction_.size() == inputMolecules.size())
+//     {
+//         // set the heat of reactions
+//        
+//         forAll(heatOfReaction_, i)
+//         {
+//             heatOfReaction_[i] = readScalar
+//             (
+//                 heatOfReactionDict.lookup(inputMoleculesReduced[i])
+//             );
+//         }
+//     }
+//     else
+//     {
+//         FatalErrorIn("dsmcDiffuseCatalyticWallPatch::setProperties()")
+//                 << "heatOfReaction list must be same size as "
+//                 << "moleculesToBeCatalysed." << nl 
+//                 << exit(FatalError);
+//     }
     
 }
 

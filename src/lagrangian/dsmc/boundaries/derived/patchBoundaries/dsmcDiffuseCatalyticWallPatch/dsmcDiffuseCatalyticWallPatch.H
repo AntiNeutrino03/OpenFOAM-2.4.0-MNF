@@ -71,7 +71,7 @@ private:
         
         List<label> catalysisTypeIds_;
         List<label> catalysedTypeIds_;
-        List<scalar> heatOfReaction_;
+//         scalarField heatOfReaction_;
 
         void setProperties();
 

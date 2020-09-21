@@ -146,6 +146,7 @@ inline Foam::dsmcParcel::dsmcParcel
     const polyMesh& mesh,
     const vector& position,
     const vector& U,
+    const vector& initPos,
     const scalar RWF,
     const scalar ERot,
     const label ELevel,
@@ -156,13 +157,14 @@ inline Foam::dsmcParcel::dsmcParcel
     const label newParcel,
     const label classification,
     const label stuckToWall,
-    const scalarField wallTemperature,
-    const vectorField wallVectors,
-    const labelList vibLevel
+    const scalarField& wallTemperature,
+    const vectorField& wallVectors,
+    const labelList& vibLevel
 )
 :
     particle(mesh, position, cellI, tetFaceI, tetPtI),
     U_(U),
+    initPos_(initPos),
     RWF_(RWF),
     ERot_(ERot),
     ELevel_(ELevel),
@@ -225,27 +227,27 @@ inline Foam::scalar Foam::dsmcParcel::constantProperties::alpha() const
     return alpha_;
 }
 
-inline Foam::scalarList Foam::dsmcParcel::constantProperties::thetaV() const
+inline const Foam::scalarList& Foam::dsmcParcel::constantProperties::thetaV() const
 {
     return thetaV_;
 }
 
-inline Foam::scalarList Foam::dsmcParcel::constantProperties::thetaD() const
+inline const Foam::scalarList& Foam::dsmcParcel::constantProperties::thetaD() const
 {
     return thetaD_;
 }
 
-inline Foam::scalarList Foam::dsmcParcel::constantProperties::Zref() const
+inline const Foam::scalarList& Foam::dsmcParcel::constantProperties::Zref() const
 {
     return Zref_;
 }
 
-inline Foam::scalarList Foam::dsmcParcel::constantProperties::TrefZv() const
+inline const Foam::scalarList& Foam::dsmcParcel::constantProperties::TrefZv() const
 {
     return TrefZv_;
 }
 
-inline Foam::labelList Foam::dsmcParcel::constantProperties::charDissQuantumLevel() const
+inline const Foam::labelList& Foam::dsmcParcel::constantProperties::charDissQuantumLevel() const
 {
     return charDissQuantumLevel_;
 }
@@ -265,16 +267,15 @@ inline Foam::label Foam::dsmcParcel::constantProperties::charge() const
     return charge_;
 }
 
-inline Foam::scalarList Foam::dsmcParcel::constantProperties::electronicEnergyList() const
+inline const Foam::scalarList& Foam::dsmcParcel::constantProperties::electronicEnergyList() const
 {
     return electronicEnergyList_;
 }
 
-inline Foam::labelList Foam::dsmcParcel::constantProperties::degeneracyList() const
+inline const Foam::labelList& Foam::dsmcParcel::constantProperties::degeneracyList() const
 {
     return degeneracyList_;
 }
-
 
 // * * * * * * * * * * * trackData Member Functions  * * * * * * * * * * * * //
 
@@ -297,6 +298,11 @@ inline Foam::label Foam::dsmcParcel::typeId() const
 inline const Foam::vector& Foam::dsmcParcel::U() const
 {
     return U_;
+}
+
+inline const Foam::vector& Foam::dsmcParcel::initPos() const
+{
+    return initPos_;
 }
 
 //template <class ParcelType>
@@ -332,17 +338,17 @@ inline Foam::label Foam::dsmcParcel::stuckToWall() const
     return stuckToWall_;
 }
 
-inline Foam::scalarField Foam::dsmcParcel::wallTemperature() const
+inline const Foam::scalarField& Foam::dsmcParcel::wallTemperature() const
 {
     return wallTemperature_;
 }
 
-inline Foam::vectorField Foam::dsmcParcel::wallVectors() const
+inline const Foam::vectorField& Foam::dsmcParcel::wallVectors() const
 {
     return wallVectors_;
 }
 
-inline Foam::labelList Foam::dsmcParcel::vibLevel() const
+inline const Foam::labelList& Foam::dsmcParcel::vibLevel() const
 {
     return vibLevel_;
 }
@@ -356,6 +362,11 @@ inline Foam::label& Foam::dsmcParcel::typeId()
 inline Foam::vector& Foam::dsmcParcel::U()
 {
     return U_;
+}
+
+inline Foam::vector& Foam::dsmcParcel::initPos()
+{
+    return initPos_;
 }
 
 //template <class ParcelType>
@@ -404,4 +415,5 @@ inline Foam::labelList& Foam::dsmcParcel::vibLevel()
 {
     return vibLevel_;
 }
+
 // ************************************************************************* //

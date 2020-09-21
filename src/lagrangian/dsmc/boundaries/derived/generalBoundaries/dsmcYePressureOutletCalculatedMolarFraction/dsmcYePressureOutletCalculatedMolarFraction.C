@@ -265,7 +265,7 @@ void dsmcYePressureOutletCalculatedMolarFraction::controlParcelsBeforeMove()
                 scalar uNormal;
                 scalar uNormalThermal;
 
-                if(abs(faceVelocity & n) > VSMALL)
+                if(fabs(faceVelocity & n) > VSMALL)
                 {
                     // Select a velocity using Bird eqn 12.5
                     do
@@ -337,6 +337,7 @@ void dsmcYePressureOutletCalculatedMolarFraction::controlParcelsBeforeMove()
                 (
                     p,
                     U,
+                    p,
                     RWF,
                     ERot,
                     ELevel,
@@ -588,9 +589,9 @@ void dsmcYePressureOutletCalculatedMolarFraction::controlParcelsAfterCollisions(
             
             vector outletFaceNormal(vector::zero);
             
-            outletFaceNormal.x() = abs(n.x());
-            outletFaceNormal.y() = abs(n.y());
-            outletFaceNormal.z() = abs(n.z());
+            outletFaceNormal.x() = fabs(n.x());
+            outletFaceNormal.y() = fabs(n.y());
+            outletFaceNormal.z() = fabs(n.z());
             
             outletVelocity_[c].x() = totalMomentum_[c].x()/totalMass_[c]; //equation 4 from Wang (2004)
             outletVelocity_[c].y() = totalMomentum_[c].y()/totalMass_[c];

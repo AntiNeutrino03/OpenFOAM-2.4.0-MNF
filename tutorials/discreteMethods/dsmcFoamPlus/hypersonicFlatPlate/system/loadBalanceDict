@@ -17,5 +17,6 @@ FoamFile
 
 enableBalancing     false;
 maximumAllowableImbalance       0.1;
+steadyStateCase         true;
 
 // ************************************************************************* //

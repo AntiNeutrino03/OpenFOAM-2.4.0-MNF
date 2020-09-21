@@ -23,6 +23,7 @@ nEquivalentParticles            10.6;
 chemicalReactions				false;
 chargedParticles                false;
 adsorption                      false;
+constantZv                      false;
 
 
 // Axisymmetric Properties

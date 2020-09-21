@@ -142,11 +142,6 @@ void noTimeCounterSubCycled::collide()
                 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
                 scalar sigmaTcRMax = cloud_.sigmaTcRMax()[cellI];
-
-//                 scalar selectedPairs =
-//                     cloud_.collisionSelectionRemainder()[cellI]
-//                 + 0.5*nC*(nC - 1)*cloud_.nParticle()*sigmaTcRMax*(deltaT/nSubCycles_)
-//                 /mesh.cellVolumes()[cellI];
                 
                 scalar selectedPairs = 0.0;
                 
@@ -204,10 +199,7 @@ void noTimeCounterSubCycled::collide()
 
                     if (nSC > 1)
                     {
-                        // If there are two or more particle in a subCell, choose
-                        // another from the same cell.  If the same candidate is
-                        // chosen, choose again. If two electrons are chosen,
-                        // choose again.
+                        // If there are two or more particle in a subCell, choose another from the same cell.  If the same candidate is chosen, choose again.
                         
                         do
                         {
@@ -228,36 +220,20 @@ void noTimeCounterSubCycled::collide()
                         } while (candidateP == candidateQ);
                     }
 
-                    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-                    // uniform candidate selection procedure
-
-                    // // Select the first collision candidate
-                    // label candidateP = rndGen_.integer(0, nC-1);
-
-                    // // Select a possible second collision candidate
-                    // label candidateQ = rndGen_.integer(0, nC-1);
-
-                    // // If the same candidate is chosen, choose again
-                    // while (candidateP == candidateQ)
-                    // {
-                    //     candidateQ = rndGen_.integer(0, nC-1);
-                    // }
-
-                    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
                     dsmcParcel& parcelP = *cellParcels[candidateP];
                     dsmcParcel& parcelQ = *cellParcels[candidateQ];
 
-                    label chargeP = -2;
-                    label chargeQ = -2;
-
-                    chargeP = cloud_.constProps(parcelP.typeId()).charge();
-                    chargeQ = cloud_.constProps(parcelQ.typeId()).charge();
-                    
-                    //do not allow electron-electron collisions
-                    
-                    if(!(chargeP == -1 && chargeQ == -1))
-                    {
+//                     label chargeP = -2;
+//                     label chargeQ = -2;
+// 
+//                     chargeP = cloud_.constProps(parcelP.typeId()).charge();
+//                     chargeQ = cloud_.constProps(parcelQ.typeId()).charge();
+//                     
+//                     //do not allow electron-electron collisions
+//                     
+//                     if(!(chargeP == -1 && chargeQ == -1))
+//                     {
                         scalar sigmaTcR = cloud_.binaryCollision().sigmaTcR
                         (
                             parcelP,
@@ -330,7 +306,7 @@ void noTimeCounterSubCycled::collide()
 
                             collisions++;
                         }
-                    }
+//                     }
                 }
             }
         }

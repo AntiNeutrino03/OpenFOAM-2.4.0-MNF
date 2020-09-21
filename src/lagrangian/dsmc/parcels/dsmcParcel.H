@@ -164,19 +164,19 @@ public:
             inline scalar alpha() const;
     
             //- Return the characteristic vibrational temperature
-            inline scalarList thetaV() const;    
+            inline const scalarList& thetaV() const;    
             
             //- Return the characteristic dissociation temperature
-            inline scalarList thetaD() const;
+            inline const scalarList& thetaD() const;
     
             //- Return the characteristic vibrational relaxation number
-            inline scalarList Zref() const;
+            inline const scalarList& Zref() const;
                       
             //- Return the reference temperature for the characteristic vibrational relaxation number
-            inline scalarList TrefZv() const;
+            inline const scalarList& TrefZv() const;
             
             //- Return the characteristic dissociation level
-            inline labelList charDissQuantumLevel() const;
+            inline const labelList& charDissQuantumLevel() const;
             
             //- Return the ionisation temperature
             inline scalar ionisationTemperature() const;
@@ -188,10 +188,10 @@ public:
             inline label charge() const;
 
             //- Return the number of electronic energy/degeneracy levels
-            inline scalarList electronicEnergyList() const;
+            inline const scalarList& electronicEnergyList() const;
             
             //- Return the number of electronic energy/degeneracy levels
-            inline labelList degeneracyList() const;
+            inline const labelList& degeneracyList() const;
     };
 
 
@@ -227,6 +227,9 @@ private:
 
             //- Velocity of Parcel [m/s]
             vector U_;
+            
+            //- Initial position of parcel each time step
+            vector initPos_;
             
             //- Radial weight of parcel (for axisymmetric)
             scalar RWF_;
@@ -277,6 +280,7 @@ public:
             const polyMesh& mesh,
             const vector& position,
             const vector& U,
+            const vector& initPos,
             const scalar RWF,
             const scalar ERot,
             const label ELevel,
@@ -287,9 +291,9 @@ public:
             const label newParcel,
             const label classification,
             const label stuckToWall,
-            const scalarField wallTemperature,
-            const vectorField wallVectors,
-            const labelList vibLevel
+            const scalarField& wallTemperature,
+            const vectorField& wallVectors,
+            const labelList& vibLevel
         );
 
         //- Construct from Istream
@@ -345,6 +349,9 @@ public:
             //- Return const access to velocity
             inline const vector& U() const;
             
+            //- Return const access to intialPosition
+            inline const vector& initPos() const;
+            
             //- Return const access to radial weight
             inline scalar RWF() const;
 
@@ -368,13 +375,13 @@ public:
             inline label stuckToWall() const;
             
              //Return const access to temperature of wall particle is stuck to
-            inline scalarField wallTemperature() const;
+            inline const scalarField& wallTemperature() const;
             
             //Return access to wall vectors of wall particle is stuck to
-            inline vectorField wallVectors() const;
+            inline const vectorField& wallVectors() const;
             
             //- Return const access to vibrational energy
-            inline labelList vibLevel() const;
+            inline const labelList& vibLevel() const;
 
 
         // Edit
@@ -384,6 +391,9 @@ public:
 
             //- Return access to velocity
             inline vector& U();
+            
+            //- Return access to initial position
+            inline vector& initPos();
             
             //- Return non-const access to radial weight
             inline scalar& RWF();

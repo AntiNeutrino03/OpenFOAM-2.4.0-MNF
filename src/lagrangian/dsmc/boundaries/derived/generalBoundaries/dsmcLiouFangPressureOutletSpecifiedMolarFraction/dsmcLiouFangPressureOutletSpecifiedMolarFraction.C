@@ -270,7 +270,7 @@ void dsmcLiouFangPressureOutletSpecifiedMolarFraction::controlParcelsBeforeMove(
                 scalar uNormal;
                 scalar uNormalThermal;
 
-                if(abs(faceVelocity & n) > VSMALL)
+                if(fabs(faceVelocity & n) > VSMALL)
                 {
                     // Select a velocity using Bird eqn 12.5
                     do
@@ -348,6 +348,7 @@ void dsmcLiouFangPressureOutletSpecifiedMolarFraction::controlParcelsBeforeMove(
                 (
                     p,
                     U,
+                    p,
                     RWF,
                     ERot,
                     ELevel,

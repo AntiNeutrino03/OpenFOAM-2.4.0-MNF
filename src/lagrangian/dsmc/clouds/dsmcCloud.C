@@ -170,14 +170,6 @@ void Foam::dsmcCloud::addElectrons()
             {
                 //found an ion, add an electron here
                 
-                //electron temperature will be zero if there have been no
-                //electrons in the cell during the simulation
-                
-//                 label cellI = p->cell();
-//                 vector position = p->position();
-//                 label tetFaceI = p->tetFace();
-//                 label tetPtI = p->tetPt();
-                
                 vector position = p->position();
                 
                 label cellI = -1;
@@ -192,15 +184,18 @@ void Foam::dsmcCloud::addElectrons()
                     tetPtI
                 );
                 
+                //electron temperature will be zero if there have been no
+                //electrons in the cell during the simulation
+                
                 if(electronTemperature_[cellI] < VSMALL)
                 {
-                    electronTemperature_[cellI] = 6000.0;
+                    electronTemperature_[cellI] = 1000.0;
                 }
-                if(electronTemperature_[cellI] > 8.0e4)
+                if(electronTemperature_[cellI] > 3e4)
                 {
-                    electronTemperature_[cellI] = 30000.0;
+                    electronTemperature_[cellI] = 1000.0;
                 }
-                    
+
 
                 vector electronVelocity = equipartitionLinearVelocity
                     (
@@ -228,6 +223,7 @@ void Foam::dsmcCloud::addElectrons()
                 (
                     position,
                     electronVelocity,
+                    position,
                     RWF,
                     0.0,
                     0,
@@ -480,6 +476,7 @@ void Foam::dsmcCloud::addNewParcel
 (
     const vector& position,
     const vector& U,
+    const vector& initPos,
     const scalar RWF,
     const scalar ERot,
     const label ELevel,
@@ -490,9 +487,9 @@ void Foam::dsmcCloud::addNewParcel
     const label newParcel,
     const label classification,
     const label stuckToWall,
-    const scalarField wallTemperature,
-    const vectorField wallVectors,
-    const labelList vibLevel
+    const scalarField& wallTemperature,
+    const vectorField& wallVectors,
+    const labelList& vibLevel
 )
 {
     dsmcParcel* pPtr = new dsmcParcel
@@ -500,6 +497,7 @@ void Foam::dsmcCloud::addNewParcel
         mesh_,
         position,
         U,
+        position,
         RWF,
         ERot,
         ELevel,
@@ -649,6 +647,7 @@ Foam::dsmcCloud::dsmcCloud
     typeIdList_(particleProperties_.lookup("typeIdList")),
     nParticle_(readScalar(particleProperties_.lookup("nEquivalentParticles"))),
     axisymmetric_(Switch(particleProperties_.lookup("axisymmetricSimulation"))),
+    vibrationalRelaxationCollisionNumber_(50.0),
     radialExtent_(0.0),
     maxRWF_(1.0),
     chemReact_(Switch(particleProperties_.lookup("chemicalReactions"))),
@@ -914,6 +913,8 @@ void Foam::dsmcCloud::evolve()
     {
         releaseParticlesFromWall();
     }
+    
+    updateInitPos();
     
     // Move the particles ballistically with their current velocities
     Cloud<dsmcParcel>::move(td, mesh_.time().deltaTValue());
@@ -1216,12 +1217,12 @@ Foam::label Foam::dsmcCloud::equipartitionElectronicLevel
             //Eq. 3.1.1 of Liechty thesis.   
             boltz = degeneracyList_[ii]*
                             exp((-electronicEnergyList_[ii]/EMax))/expSum;
-            
+
             if (boltzMax < boltz)
             {
                 boltzMax = boltz;
                 jSelect = ii;
-            }               
+            }
         }
         //Max. poss energy in list : list goes from [0] to [jMax-1]
         EJ = electronicEnergyList_[jSelect]; 
@@ -1340,6 +1341,8 @@ Foam::label Foam::dsmcCloud::postCollisionVibrationalEnergyLevel
     }
     else
     {
+        scalar inverseVibrationalCollisionNumber = 1.0;
+        
         // - "quantised collision temperature" (equation 3, Bird 2010), 
         // denominator from Bird 5.42
 
@@ -1362,8 +1365,8 @@ Foam::label Foam::dsmcCloud::postCollisionVibrationalEnergyLevel
         // set to about 1/(5Zv) Bird 2008 RGD "A Comparison of Collison 
         // Energy-Based and Temperature-Based..."
         
-        scalar inverseVibrationalCollisionNumber = 1.0/(5.0*Zv);
-
+        inverseVibrationalCollisionNumber = 1.0/(5.0*Zv);
+        
         if(inverseVibrationalCollisionNumber > rndGen_.scalar01())
         {
             // post-collision quantum number
@@ -1531,6 +1534,7 @@ void Foam::dsmcCloud::axisymmetricWeighting()
                     (
                         position,
                         p->U(),
+                        position,
                         p->RWF(),
                         p->ERot(),
                         p->ELevel(),
@@ -1573,6 +1577,7 @@ void Foam::dsmcCloud::axisymmetricWeighting()
                     (
                         position,
                         p->U(),
+                        position,
                         p->RWF(),
                         p->ERot(),
                         p->ELevel(),
@@ -1600,6 +1605,21 @@ void Foam::dsmcCloud::axisymmetricWeighting()
             } 
         }
     }
+}
+
+void Foam::dsmcCloud::updateInitPos()
+{
+    forAll(cellOccupancy_, c)
+    {
+        const DynamicList<dsmcParcel*>& molsInCell = cellOccupancy_[c];
+
+        forAll(molsInCell, mIC)
+        {
+            dsmcParcel* p = molsInCell[mIC];
+                       
+            p->initPos() = p->position();
+        }
+    }    
 }
 
 void Foam::dsmcCloud::insertParcelInCellOccupancy(dsmcParcel* p)

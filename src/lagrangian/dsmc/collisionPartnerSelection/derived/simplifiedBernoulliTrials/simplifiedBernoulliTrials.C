@@ -22,16 +22,6 @@ License
     along with OpenFOAM; if not, write to the Free Software Foundation,
     Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
 
-Class
-    simplifiedBernoulliTrials
-
-Description
-
-Stefan Stefanov's simplified Bernoulli trials collision partner selection routine.
-Leads to less repeat collisions than Bird's no time counter method.
-See SIAM J. Sci. Comput. 33(2) 667-702 for details.
-We do not use the half timestep implementation.
-
 \*----------------------------------------------------------------------------*/
 
 #include "simplifiedBernoulliTrials.H"
@@ -89,6 +79,8 @@ void simplifiedBernoulliTrials::collide()
     {
         return;
     }
+    
+    
 
     // Temporary storage for subCells
     List<DynamicList<label> > subCells(8);
@@ -110,7 +102,37 @@ void simplifiedBernoulliTrials::collide()
         label nC(cellParcels.size());
 
         if (nC > 1)
-        {   
+        {
+            // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+            // Assign particles to one of 8 Cartesian subCells
+
+            // Clear temporary lists
+            forAll(subCells, i)
+            {
+                subCells[i].clear();
+            }
+
+            // Inverse addressing specifying which subCell a parcel is in
+            List<label> whichSubCell(cellParcels.size());
+
+            point cC = mesh.cellCentres()[cellI];
+
+            forAll(cellParcels, i)
+            {
+                const dsmcParcel& p = *cellParcels[i];
+
+                vector relPos = p.position() - cC;
+
+                label subCell =
+                    pos(relPos.x()) + 2*pos(relPos.y()) + 4*pos(relPos.z());
+
+                subCells[subCell].append(i);
+
+                whichSubCell[i] = subCell;
+            }
+
+            // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+            
             scalar nParticle = cloud_.nParticle();
             
             scalar RWF = 1.0;
@@ -126,75 +148,83 @@ void simplifiedBernoulliTrials::collide()
                 nParticle *= RWF;
             }
             
-            scalar prob1 = (nParticle*deltaT)/(mesh.cellVolumes()[cellI]);
+            scalar prob1 = (nParticle*deltaT)/(mesh.cellVolumes()[cellI]/8.0);
             label k = -1;
             label candidateP = -1;
             label candidateQ = -1;
-                
-            for(label p = 0 ; p < nC-1 ; p++)
-            {                
-                // Select the first collision candidate
-                candidateP = p;
             
-                k = nC-1 - p;
-                label random = rndGen_.integer(1, k);
-                candidateQ = p + random;
-                
-                dsmcParcel& parcelP = *cellParcels[candidateP];
-                dsmcParcel& parcelQ = *cellParcels[candidateQ];  
-
-                scalar sigmaTcR = cloud_.binaryCollision().sigmaTcR
-                (
-                    parcelP,
-                    parcelQ
-                );
-            
-                scalar Probability = k*prob1*sigmaTcR;
-
-                if (Probability > rndGen_.scalar01())
+            // loop over sub cells
+            forAll(subCells, i)
+            {
+                label nCS = subCells[i].size();
+                    
+                if(nCS > 1)
                 {
-                    // chemical reactions
+                    for(label p = 0 ; p < nCS-1 ; p++)
+                    {                
+                        // Select the first collision candidate
+                        candidateP = p;
+                    
+                        k = nCS - p - 1;
+                        candidateQ = p + rndGen_.integer(1, k);
+                        
+                        dsmcParcel& parcelP = *cellParcels[subCells[i][candidateP]];
+                        dsmcParcel& parcelQ = *cellParcels[subCells[i][candidateQ]];  
 
-                    // find which reaction model parcel p and q should use
-                    label rMId = cloud_.reactions().returnModelId(parcelP, parcelQ);
-
-                    if(rMId != -1)
-                    {
-                        // try to react molecules
-                        if(cloud_.reactions().reactions()[rMId]->reactWithLists())
-                        {
-
-                        }
-                        else
-                        {
-                            cloud_.reactions().reactions()[rMId]->reaction
-                            (
-                                parcelP,
-                                parcelQ
-                            );                                    
-                        }
-                        // if reaction unsuccessful use conventional collision model
-                        if(cloud_.reactions().reactions()[rMId]->relax())
-                        {
-                            cloud_.binaryCollision().collide
-                            (
-                                parcelP,
-                                parcelQ,
-                                cellI
-                            );
-                        }
-                    }
-                    else // if reaction model not found, use conventional collision model
-                    {
-                        cloud_.binaryCollision().collide
+                        scalar sigmaTcR = cloud_.binaryCollision().sigmaTcR
                         (
                             parcelP,
-                            parcelQ,
-                            cellI
+                            parcelQ
                         );
-                    }
                     
-                    collisions++;
+                        scalar probability = k*prob1*sigmaTcR;
+
+                        if (probability > rndGen_.scalar01())
+                        {
+                            // chemical reactions
+
+                            // find which reaction model parcel p and q should use
+                            label rMId = cloud_.reactions().returnModelId(parcelP, parcelQ);
+
+                            if(rMId != -1)
+                            {
+                                // try to react molecules
+                                if(cloud_.reactions().reactions()[rMId]->reactWithLists())
+                                {
+
+                                }
+                                else
+                                {
+                                    cloud_.reactions().reactions()[rMId]->reaction
+                                    (
+                                        parcelP,
+                                        parcelQ
+                                    );                                    
+                                }
+                                // if reaction unsuccessful use conventional collision model
+                                if(cloud_.reactions().reactions()[rMId]->relax())
+                                {
+                                    cloud_.binaryCollision().collide
+                                    (
+                                        parcelP,
+                                        parcelQ,
+                                        cellI
+                                    );
+                                }
+                            }
+                            else // if reaction model not found, use conventional collision model
+                            {
+                                cloud_.binaryCollision().collide
+                                (
+                                    parcelP,
+                                    parcelQ,
+                                    cellI
+                                );
+                            }
+                            
+                            collisions++;
+                        }
+                    }
                 }
             }
         }

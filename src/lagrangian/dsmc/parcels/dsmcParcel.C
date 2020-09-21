@@ -86,7 +86,14 @@ bool Foam::dsmcParcel::move
             
             tEnd -= dt;
 
-            stepFraction() = 1.0 - tEnd/trackTime;
+            if(stepFraction() == 1.0)
+            {
+                tEnd = 0.0;
+            }
+            else
+            {
+                stepFraction() = 1.0 - tEnd/trackTime;
+            }
                 
             // - face tracking info
             if( face() != -1 )    //*******

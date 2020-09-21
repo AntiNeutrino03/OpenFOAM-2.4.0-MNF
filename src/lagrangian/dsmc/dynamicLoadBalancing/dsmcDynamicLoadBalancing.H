@@ -71,6 +71,8 @@ class dsmcDynamicLoadBalancing
         bool performBalance_;
         
         bool enableBalancing_;
+
+        bool steadyStateCase_;
         
         scalar originalEndTime_;
         

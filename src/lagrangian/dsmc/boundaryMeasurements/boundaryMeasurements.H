@@ -7,30 +7,23 @@
 -------------------------------------------------------------------------------
 License
     This file is part of OpenFOAM.
-
     OpenFOAM is free software; you can redistribute it and/or modify it
     under the terms of the GNU General Public License as published by the
     Free Software Foundation; either version 2 of the License, or (at your
     option) any later version.
-
     OpenFOAM is distributed in the hope that it will be useful, but WITHOUT
     ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
     FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
     for more details.
-
     You should have received a copy of the GNU General Public License
     along with OpenFOAM; if not, write to the Free Software Foundation,
     Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
-
 Class
     boundaryMeasurements
-
 Description
-
 SourceFiles
     boundaryMeasurementsI.H
     boundaryMeasurements.C
-
 \*---------------------------------------------------------------------------*/
 
 #ifndef boundaryMeasurements_H
@@ -76,6 +69,8 @@ class boundaryMeasurements
         List< List < scalarField > > rotationalDofBF_;
         List< List < scalarField > > vibrationalEBF_;
         List< List < scalarField > > electronicEBF_;
+        List< List < scalarField > > numberFluxBF_;
+        List< List < scalarField > > massFluxBF_;
         List< List < scalarField > > qBF_;
         List< List < vectorField > > fDBF_;
 
@@ -130,6 +125,8 @@ public:
         inline const List< List < scalarField > >& rotationalDofBF() const;
         inline const List< List < scalarField > >& vibrationalEBF() const;
         inline const List< List < scalarField > >& electronicEBF() const;
+        inline const List< List < scalarField > >& numberFluxBF() const;
+        inline const List< List < scalarField > >& massFluxBF() const;
         inline const List< List < scalarField > >& qBF() const;
         inline const List< List < vectorField > >& fDBF() const;
 
@@ -149,6 +146,8 @@ public:
         inline List< List < scalarField > >& rotationalDofBF();
         inline List< List < scalarField > >& vibrationalEBF();
         inline List< List < scalarField > >& electronicEBF();
+        inline List< List < scalarField > >& numberFluxBF();
+        inline List< List < scalarField > >& massFluxBF();
         inline List< List < scalarField > >& qBF();
         inline List< List < vectorField > >& fDBF();
 

@@ -7,23 +7,18 @@
 -------------------------------------------------------------------------------
 License
     This file is part of OpenFOAM.
-
     OpenFOAM is free software; you can redistribute it and/or modify it
     under the terms of the GNU General Public License as published by the
     Free Software Foundation; either version 2 of the License, or (at your
     option) any later version.
-
     OpenFOAM is distributed in the hope that it will be useful, but WITHOUT
     ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
     FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
     for more details.
-
     You should have received a copy of the GNU General Public License
     along with OpenFOAM; if not, write to the Free Software Foundation,
     Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
-
 Description
-
 \*---------------------------------------------------------------------------*/
 
 #include "dsmcPatchBoundary.H"
@@ -199,6 +194,7 @@ void dsmcPatchBoundary::measurePropertiesBeforeControl(dsmcParcel& p)
         scalar invMagUnfA = 1/max(mag(U_dot_nw)*fA, VSMALL);
             
         cloud_.boundaryFluxMeasurements().rhoNBF()[p.typeId()][wppIndex][wppLocalFace] += invMagUnfA;
+        
         if(constProps.rotationalDegreesOfFreedom() > 0)
         {
            cloud_.boundaryFluxMeasurements().rhoNIntBF()[p.typeId()][wppIndex][wppLocalFace] += invMagUnfA; 
@@ -334,6 +330,9 @@ void dsmcPatchBoundary::measurePropertiesAfterControl(dsmcParcel& p, scalar heat
         
         cloud_.boundaryFluxMeasurements().qBF()[p.typeId()][wppIndex][wppLocalFace] += deltaQ;
         cloud_.boundaryFluxMeasurements().fDBF()[p.typeId()][wppIndex][wppLocalFace] += deltaFD;
+        
+        cloud_.boundaryFluxMeasurements().numberFluxBF()[p.typeId()][wppIndex][wppLocalFace] += nParticle/fA;
+        cloud_.boundaryFluxMeasurements().massFluxBF()[p.typeId()][wppIndex][wppLocalFace] += m*nParticle/fA;
     }
 }
 
