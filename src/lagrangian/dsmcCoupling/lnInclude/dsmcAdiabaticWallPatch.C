@@ -1,0 +1,1 @@
+../boundaries/derived/patchBoundaries/dsmcAdiabaticWallPatch/dsmcAdiabaticWallPatch.C

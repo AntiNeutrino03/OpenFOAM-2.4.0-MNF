@@ -1,0 +1,1 @@
+../macroscopicProperties/derived/otherFields/dsmcVibrationalDegreesOfFreedomZone/dsmcVibrationalDegreesOfFreedomZone.C

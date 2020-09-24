@@ -1,0 +1,1 @@
+../reactions/derived/atomAtomIonisationSameSpecies/atomAtomIonisationSameSpecies.H
