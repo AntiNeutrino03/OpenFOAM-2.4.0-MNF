@@ -1,1 +1,0 @@
-../boundaries/derived/patchBoundaries/dsmcDiffuseCatalyticWallPatch/dsmcDiffuseCatalyticWallPatch.H
